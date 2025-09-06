@@ -1,9 +1,9 @@
-import { requireUser } from "@/lib/auth/requireUser";
-import Link from "next/link";
-import { Card } from "@/components/ui/card";
+import { createRoomAction } from "@/app/(dashboard)/dashboard/actions";
 import { Button } from "@/components/ui/button";
-import { createRoomAction } from "@/app/dashboard/actions";
+import { Card } from "@/components/ui/card";
+import { requireUser } from "@/lib/auth/requireUser";
 import type { Tables } from "@/lib/supabase/database.types";
+import Link from "next/link";
 
 export const runtime = "nodejs";
 
@@ -15,7 +15,10 @@ export default async function Dashboard() {
     .from("games")
     .select("*")
     .order("name");
-  console.log("[Dashboard] games", { error: gamesError, count: gamesData?.length });
+  console.log("[Dashboard] games", {
+    error: gamesError,
+    count: gamesData?.length,
+  });
   const games = (gamesData ?? null) as Tables<"games">[] | null;
 
   type MyRoom = Tables<"rooms"> & {
@@ -27,12 +30,20 @@ export default async function Dashboard() {
     .select("*, games(name, slug)")
     .eq("host_user_id", user.id)
     .order("created_at", { ascending: false });
-  console.log("[Dashboard] myRooms", { error: myRoomsError, count: myRoomsData?.length });
+  console.log("[Dashboard] myRooms", {
+    error: myRoomsError,
+    count: myRoomsData?.length,
+  });
   const myRooms = (myRoomsData ?? null) as MyRoom[] | null;
 
   return (
-    <div className="mx-auto max-w-4xl p-6 space-y-8">
-      <h1 className="text-2xl font-semibold">Arcade Hub</h1>
+    <div className="space-y-8">
+      <div>
+        <h1 className="text-3xl font-bold">Arcade Hub</h1>
+        <p className="text-muted-foreground">
+          Create rooms and manage your games
+        </p>
+      </div>
 
       <section>
         <h2 className="mb-2 text-lg font-medium">Create a room</h2>

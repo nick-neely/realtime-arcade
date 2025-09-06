@@ -1,7 +1,7 @@
 "use server";
 
-import { redirect } from "next/navigation";
 import { createSupabaseServer } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
 
 /**
  * Sends a magic link (email OTP) to the provided email.
@@ -34,4 +34,33 @@ export async function login(formData: FormData) {
   }
 
   redirect("/login?sent=1");
+}
+
+/**
+ * Initiates GitHub OAuth login flow.
+ * Redirects to GitHub for authentication, then back to the OAuth callback route.
+ */
+export async function loginWithGitHub(formData: FormData) {
+  const supabase = await createSupabaseServer();
+  
+  const next = String(formData.get("next") ?? "/dashboard");
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL!;
+  const redirectTo = `${siteUrl}/auth/callback?next=${encodeURIComponent(next)}`;
+
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: 'github',
+    options: {
+      redirectTo,
+    },
+  });
+
+  if (error) {
+    redirect("/login?error=oauth_error");
+  }
+
+  if (data.url) {
+    redirect(data.url);
+  }
+
+  redirect("/login?error=oauth_error");
 }
