@@ -15,12 +15,25 @@ export function ConditionalLayout({ children }: ConditionalLayoutProps) {
   const isDashboardRoute =
     pathname.startsWith("/dashboard") || pathname.startsWith("/games/");
 
+  // Check if we're on the landing page
+  const isLandingPage = pathname === "/";
+
   // For dashboard routes, just render children (dashboard layout handles its own header)
   if (isDashboardRoute) {
     return <>{children}</>;
   }
 
-  // For public routes, render with header and footer
+  // For landing page, render without header for cleaner hero experience
+  if (isLandingPage) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <main className="flex-1">{children}</main>
+        <Footer />
+      </div>
+    );
+  }
+
+  // For other public routes, render with header and footer
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
