@@ -1,13 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
-import { requireUser } from "@/lib/auth/requireUser";
 import type { Tables } from "@/lib/supabase/database.types";
 import { createSupabaseServer } from "@/lib/supabase/server";
 import { Gamepad2, Plus, Users } from "lucide-react";
 import Link from "next/link";
 
 export default async function DashboardPlay() {
-  const { user } = await requireUser();
   const supabase = await createSupabaseServer();
 
   type RoomListRow = Pick<Tables<"rooms">, "id" | "status"> & {

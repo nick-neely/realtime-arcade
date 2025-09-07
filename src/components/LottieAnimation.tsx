@@ -1,10 +1,10 @@
 "use client";
 
-import Lottie from "lottie-react";
+import Lottie, { type LottieRefCurrentProps } from "lottie-react";
 import { useEffect, useRef } from "react";
 
 interface LottieAnimationProps {
-  animationData: any;
+  animationData: Record<string, unknown>;
   className?: string;
   autoplay?: boolean;
   loop?: boolean;
@@ -20,7 +20,7 @@ export function LottieAnimation({
   speed = 1,
   onComplete,
 }: LottieAnimationProps) {
-  const lottieRef = useRef<any>(null);
+  const lottieRef = useRef<LottieRefCurrentProps | null>(null);
 
   useEffect(() => {
     if (lottieRef.current && typeof speed === "number") {

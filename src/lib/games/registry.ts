@@ -8,7 +8,7 @@ export type GameDescriptor = {
       action: string[];   // whitelisted broadcast event names
     };
     // Optional client reducer to simulate while waiting for DB confirm
-    reducer?: (state: any, event: { type: string; payload: any }) => any;
+    reducer?: <T>(state: T, event: { type: string; payload: Record<string, unknown> }) => T;
     // Dynamic import to the game UI
     load: () => Promise<{ default: ComponentType<{ roomId: string }> }>;
   };
