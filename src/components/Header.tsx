@@ -20,6 +20,7 @@ export function Header() {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const supabase = useMemo(() => createSupabaseClient(), []);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     const getUser = async () => {
@@ -113,7 +114,7 @@ export function Header() {
 
           {/* Mobile Navigation */}
           <div className="md:hidden">
-            <Sheet>
+            <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
               <SheetTrigger asChild>
                 <Button
                   variant="ghost"
@@ -128,7 +129,10 @@ export function Header() {
                 <SheetHeader>
                   <SheetTitle className="text-left">Menu</SheetTitle>
                 </SheetHeader>
-                <div className="flex flex-col space-y-4 mt-6">
+                <div
+                  className="flex flex-col space-y-4 mt-6"
+                  onClick={() => setMenuOpen(false)}
+                >
                   <NavigationLinks />
                 </div>
               </SheetContent>

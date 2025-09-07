@@ -4,11 +4,11 @@ import { createSupabaseClient } from "@/lib/supabase/client";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
 import { Gamepad2, Github, Mail, Twitter } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 export function Footer() {
   const [user, setUser] = useState<SupabaseUser | null>(null);
-  const supabase = createSupabaseClient();
+  const supabase = useMemo(() => createSupabaseClient(), []);
 
   useEffect(() => {
     const getUser = async () => {
@@ -27,7 +27,7 @@ export function Footer() {
     });
 
     return () => subscription.unsubscribe();
-  }, [supabase.auth]);
+  }, [supabase]);
   return (
     <footer className="border-t-2 border-foreground bg-background">
       <div className="container mx-auto px-4 py-4 md:py-12">
