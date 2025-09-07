@@ -31,9 +31,9 @@ export default async function Play() {
     <div className="min-h-screen bg-background">
       <ServerHeader />
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-8">
+      <section className="container mx-auto px-4 py-8">
         <PlayPageClient rooms={rooms} />
-      </main>
+      </section>
     </div>
   );
 }
