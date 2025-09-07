@@ -18,8 +18,16 @@ export function ConditionalLayout({ children }: ConditionalLayoutProps) {
   // Check if we're on the landing page
   const isLandingPage = pathname === "/";
 
+  // Check if we're on the play page (handles its own server-side header)
+  const isPlayPage = pathname === "/play";
+
   // For dashboard routes, just render children (dashboard layout handles its own header)
   if (isDashboardRoute) {
+    return <>{children}</>;
+  }
+
+  // For play page, just render children (play page handles its own server-side header)
+  if (isPlayPage) {
     return <>{children}</>;
   }
 

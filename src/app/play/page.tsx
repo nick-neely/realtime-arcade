@@ -1,3 +1,4 @@
+import { ServerHeader } from "@/components/ServerHeader";
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import type { Tables } from "@/lib/supabase/database.types";
@@ -22,6 +23,7 @@ export default async function Play() {
 
   return (
     <div className="min-h-screen bg-background">
+      <ServerHeader />
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto space-y-8">
