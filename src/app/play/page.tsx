@@ -1,9 +1,19 @@
-import Link from "next/link";
-import { requireUser } from "@/lib/auth/requireUser";
+import { ServerHeader } from "@/components/ServerHeader";
 import type { Tables } from "@/lib/supabase/database.types";
+import { createSupabaseServer } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
+import { PlayPageClient } from "./PlayPageClient";
 
 export default async function Play() {
-  const { supabase } = await requireUser();
+  const supabase = await createSupabaseServer();
+
+  // Check if user is authenticated and redirect to dashboard play page
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (user) {
+    redirect("/dashboard/play");
+  }
   type RoomListRow = Pick<Tables<"rooms">, "id" | "status"> & {
     games: Pick<Tables<"games">, "name" | "slug">;
   };
@@ -18,26 +28,12 @@ export default async function Play() {
   const rooms = (data ?? null) as RoomListRow[] | null;
 
   return (
-    <div className="mx-auto max-w-3xl p-6 space-y-4">
-      <h1 className="text-2xl font-semibold">Join a public room</h1>
-      <div className="space-y-2">
-        {rooms?.map((r: RoomListRow) => (
-          <div
-            key={r.id}
-            className="flex items-center justify-between border rounded p-3"
-          >
-            <div>
-              {r.games.name} • {r.status}
-            </div>
-            <Link
-              href={`/games/${r.games.slug}/${r.id}`}
-              className="text-sm underline"
-            >
-              Join
-            </Link>
-          </div>
-        ))}
-      </div>
+    <div className="min-h-screen bg-background">
+      <ServerHeader />
+      {/* Main Content */}
+      <main className="container mx-auto px-4 py-8">
+        <PlayPageClient rooms={rooms} />
+      </main>
     </div>
   );
 }

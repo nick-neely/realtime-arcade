@@ -1,130 +1,624 @@
 ---
-description: >
-  Multi-game realtime web app with a shared hub, using Next.js 15 (App Router), TypeScript, Tailwind, shadcn/ui,
-  Supabase Realtime (broadcast, presence, postgres_changes), and Drizzle for schema and migrations.
-globs:
 alwaysApply: true
 ---
 
-# Purpose: Give the AI and developers a single source of truth for architecture, conventions, and workflows
+# AI Rules for Realtime Arcade
 
-project:
-name: realtime-arcade
-goals: - Keep game modules pluggable via a registry - Prefer optimistic UI with authoritative DB confirmation - Never paste SQL into Supabase editor, use Drizzle migrations
+Custom rules for the "Realtime Arcade" project to give AI and developers a single source of truth for architecture, conventions, and workflows.
 
-stack:
-runtime: nodejs 20
-framework: nextjs 15
-language: typescript strict
-styling: tailwindcss, shadcn-ui
-data:
-primary: supabase postgres
-orm: drizzle-orm + postgres-js
-realtime: supabase realtime (presence, broadcast, postgres_changes)
-state:
-server_state: tanstack react-query
-client_state: zustand (or jotai for atomic local state)
-auth: supabase auth (email link, socials optional)
-hosting: vercel
+## Project Overview
 
-directories:
-root: - src/app/ # App Router routes, server actions - src/app/(public)/login/ # unauth pages - src/app/dashboard/ # hub - src/app/play/ # public rooms list - src/app/games/[slug]/[roomId]/ # game shell pages - src/components/ # UI and shared components - src/components/ui/ # shadcn generated - src/db/ # drizzle schema, client, seeds - src/db/schema.ts # domain schema - src/db/client.ts # pooled db client for server - src/db/run-migrations.ts # migrator entry - src/db/seed.ts # seed script - src/lib/ # framework glue - src/lib/supabase/ # supabase client and server helpers - src/lib/auth/ # helpers like requireUser - src/lib/games/registry.ts # pluggable game catalog - src/games/<slug>/Client.tsx # each game client entry - src/hooks/ # custom hooks - src/store/ # zustand or jotai stores - drizzle/ # generated SQL migrations - public/ # static assets - scripts/ # any one-off scripts
-create_on_demand: - src/games/<slug>/server/ # optional game server actions - src/games/<slug>/db.ts # optional game-specific queries - src/games/<slug>/schema.ts # optional game-specific tables
+**Name:** realtime-arcade  
+**Description:** Multi-game realtime web app with a shared hub, using Next.js 15 (App Router), TypeScript, Tailwind, shadcn/ui, Supabase Realtime (broadcast, presence, postgres_changes), and Drizzle for schema and migrations.
 
-env:
-required: - NEXT*PUBLIC_SUPABASE_URL - NEXT_PUBLIC_SUPABASE_ANON_KEY - SUPABASE_SERVICE_ROLE_KEY # server only - DRIZZLE_DATABASE_URL # non pooled for migrations - SUPABASE_DB_POOL_URL # pooled for runtime via pgbouncer - NEXT_PUBLIC_SITE_URL
-rules: - Never expose SUPABASE_SERVICE_ROLE_KEY to the client - Client code should only use NEXT_PUBLIC* vars - All server actions that import db client must set `export const runtime = "nodejs"`
+**Goals:**
 
-package_scripts:
-setup: - pnpm dlx shadcn@latest init - pnpm dlx shadcn@latest add button card input label badge avatar dropdown-menu dialog sheet tooltip toast separator tabs
-db: - drizzle:generate: drizzle-kit generate - drizzle:migrate: tsx ./src/db/run-migrations.ts - db:seed: tsx ./src/db/seed.ts
-dev: - dev: next dev - build: next build - start: next start - typecheck: tsc --noEmit - lint: next lint
+- Keep game modules pluggable via a registry
+- Prefer optimistic UI with authoritative DB confirmation
+- Never paste SQL into Supabase editor, use Drizzle migrations
 
-conventions:
-code_style:
-ts: - strict null checks - no unused any - prefer readonly and const
-react: - server components by default, client components only when needed - colocate fragments of UI by feature - keep client hooks lightweight
-naming: - tables snake_case, columns snake_case - types PascalCase, variables camelCase - events lower_snake with clear verbs, for example claim_attempt
-commits: - feat: new feature - fix: bug fix - chore: tooling and deps - refactor: no feature change - db: migrations and schema
-pull_requests_checklist: - RLS policies updated for any new tables - Realtime publication updated if streaming is required - Server actions declare runtime nodejs - No service role key in client imports - Added to game registry if feature is a new game - Added tests or manual test notes
+## Tech Stack
 
-drizzle_usage:
-when_to_use_drizzle: - Schema definition and migrations - Seeds and data backfills - Server actions that need admin-level writes or cross-table transactions - Derived snapshot writes to room_state with consistency requirements
-when_not_to_use_drizzle: - Client-side queries under RLS - Realtime subscriptions - Presence and broadcast
-notes: - Use SUPABASE_DB_POOL_URL with prepare=false for runtime - Use DRIZZLE_DATABASE_URL for migrations and seed - Keep migrations idempotent where possible, safe to run in CI - Do not create tables without enabling RLS and policies in the same migration
+- **Runtime:** Node.js 20
+- **Framework:** Next.js 15
+- **Language:** TypeScript (strict mode)
+- **Styling:** TailwindCSS, shadcn/ui
+- **Data:**
+  - Primary: Supabase Postgres
+  - ORM: Drizzle ORM + postgres-js
+  - Realtime: Supabase Realtime (presence, broadcast, postgres_changes)
+- **State:**
+  - Server state: TanStack React Query
+  - Client state: Zustand (better for high-frequency updates like cursors and drag positions)
+- **Auth:** Supabase Auth (email link, socials optional)
+- **Hosting:** Vercel
 
-supabase_js_usage:
-client_side: - Auth session, sign in, sign out - RLS-protected selects and inserts by authenticated users - Realtime:
-presence: supabase.channel with presence config
-broadcast: low latency action lane, small payloads
-postgres_changes: stream room_events and select tables per game
-server_side: - Reading current user via createServerClient in RSC and actions - Lightweight reads that must honor RLS for the requesting user - Admin tasks should use drizzle with pooled server DB client, not Supabase JS
-rules: - Enable WAL for rooms, room_players, room_events, and any game tables that need streaming - Add new tables to `supabase_realtime` publication in a migration
+## Directory Structure
 
-auth_and_rls:
-principles: - Everything is private by default - Users can only see rooms that are public or rooms they joined - Only room members can read and write room_events - room_state is readable by members, writable only by service role
-checks: - New tables must enable RLS and include select and write policies - Policies must reference auth.uid() where appropriate - Add helpful indices if policies filter by user_id or room_id
+### Root Directories
 
-state_management:
-tanstack_query: - Source of truth for anything that ultimately comes from the DB - Use for room lists, event tails, snapshot loads, profile reads - Disable refetch on focus for high-churn live views when also streaming
-zustand_or_jotai: - Use for ephemeral UI and optimistic state - Keep stores per feature to avoid global sprawl - Do not store server data long term in client stores
-realtime_flow: - Broadcast an action for immediate UI intent - Persist authoritative event via insert into room_events (client if allowed, server action if validation is required) - Stream INSERT via postgres_changes for reconciliation - Optional snapshot: write summarized state to room_state in a server action
+- `src/app/` - App Router routes, server actions
+- `src/app/(public)/login/` - unauth pages
+- `src/app/dashboard/` - hub
+- `src/app/play/` - public rooms list
+- `src/app/games/[slug]/[roomId]/` - game shell pages
+- `src/components/` - UI and shared components
+- `src/components/ui/` - shadcn generated
+- `src/db/` - drizzle schema, client, seeds
+  - `src/db/schema.ts` - domain schema
+  - `src/db/client.ts` - pooled db client for server
+  - `src/db/run-migrations.ts` - migrator entry
+  - `src/db/seed.ts` - seed script
+- `src/lib/` - framework glue
+  - `src/lib/supabase/` - supabase client and server helpers
+  - `src/lib/auth/` - helpers like requireUser
+  - `src/lib/games/registry.ts` - pluggable game catalog
+- `src/games/<slug>/Client.tsx` - each game client entry
+- `src/hooks/` - custom hooks
+- `src/store/` - zustand stores
+- `drizzle/` - generated SQL migrations
+- `public/` - static assets
+- `scripts/` - any one-off scripts
 
-game_module_contract:
-descriptor: - slug: unique, stable - name: display name - channelEvents.action: list of allowed broadcast types for the game - load(): dynamic import of Client component
-client_component: - props: { roomId: string } - opens presence+broadcast channel "room:<id>", and a postgres_changes channel for room_events - initializes Query cache from room_state then replays live events
-db: - Use the shared tables for events and state - Add per-game tables only when necessary, with RLS and publication updates
-registry: - src/lib/games/registry.ts is the single place to register a game
+### Create on Demand
 
-room_lifecycle:
-lobby: - host creates room, auto joins as host - other users join, role=player or spectator
-active: - host starts game, write started_at and status=active - broadcast tick optional, keep server authoritative writes minimal
-ended: - write ended_at and status=ended - lock writes except admin post-processing
-recovery: - late joiners load room_state then subscribe to room_events tail - clients reconcile divergence with snapshot version
+- `src/games/<slug>/server/` - optional game server actions
+- `src/games/<slug>/db.ts` - optional game-specific queries
+- `src/games/<slug>/schema.ts` - optional game-specific tables
 
-security:
-rules: - Never use service role in the browser - Validate user actions on server when they affect scoring or other users - Rate limit sensitive server actions with simple token bucket or time checks - Sanitize user-generated content, limit payload sizes in broadcast
-rls_testing: - Write small SQL probes in migration PR to verify policies
+## Environment Variables
 
-performance:
-guidelines: - Keep broadcast payloads under a few hundred bytes - Prefer JSON schema that allows partial updates - Paginate room_events and limit live tail to the last N entries - Use memoization and windowing for large lists - Avoid re-subscribing channels on every render
+### Required Variables
 
-observability:
-logging: - Log important server actions with roomId, userId, type - Redact PII and auth tokens
-metrics: - Track channel subscribe time, reconnect counts, dropped events
-errors: - Surface toast notifications for realtime disconnects and policy denials
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY` (server only)
+- `DRIZZLE_DATABASE_URL` (non pooled for migrations)
+- `SUPABASE_DB_POOL_URL` (pooled for runtime via pgbouncer)
+- `NEXT_PUBLIC_SITE_URL`
 
-testing:
-levels: - unit: pure reducers, utilities, validation - component: client components with mocked Supabase client - integration: server actions with an ephemeral database or test schema - e2e: Playwright basic flows, login, create room, join, send action, see event
-seeds: - Seed at least two games and a demo public room for manual testing
+### Environment Rules
 
-deployment:
-vercel: - Set all env vars in Preview and Production - Never run migrations in Vercel build step
-ci: - Run drizzle:migrate on merge to main via GitHub Actions - Optional: run db:seed on non-prod
-supabase: - Add vercel domains to Auth redirect allowlist - Confirm WAL enabled for realtime tables
+- Never expose `SUPABASE_SERVICE_ROLE_KEY` to the client
+- Client code should only use `NEXT_PUBLIC_` vars
+- All server actions that import db client must set `export const runtime = "nodejs"`
 
-common_tasks:
-create_room: - server action uses drizzle to insert rooms and room_players, then redirect
-append_event: - if trivial and allowed by RLS, client inserts into room_events - if validation or cross-writes required, call server action using drizzle
-snapshot_state: - server action computes snapshot from recent events and writes to room_state with service role
-add_game: - add registry entry, create Client.tsx, seed games row, optional tables with RLS, update publication
+## Package Manager
 
-lint_rules_for_ai:
-do: - Prefer server components; use "use client" only when needed - Keep new tables behind RLS with policies in same migration - Use drizzle for schema and server writes that need authority - Use Supabase JS for client reads under RLS and for realtime - Keep actions small, composable, and typed
-avoid: - Writing SQL directly into Supabase editor - Importing service role key in client bundles - Mixing game-specific logic into shared shell components - Oversized broadcast messages or per-keystroke DB writes
+**Use pnpm as the package manager for all operations:**
 
-file_templates:
-server_action_header: |
+- Install dependencies: `pnpm install`
+- Add packages: `pnpm add <package>`
+- Run scripts: `pnpm run <script>`
+- Use pnpm dlx for one-time commands: `pnpm dlx <command>`
+
+## Package Scripts
+
+### Setup
+
+```bash
+pnpm dlx shadcn@latest init
+pnpm dlx shadcn@latest add button card input label badge avatar dropdown-menu dialog sheet tooltip toast separator tabs
+```
+
+### Database
+
+- `pnpm drizzle:generate` - drizzle-kit generate
+- `pnpm drizzle:migrate` - tsx ./src/db/run-migrations.ts
+- `pnpm db:seed` - tsx ./src/db/seed.ts
+
+### Development
+
+- `pnpm dev` - next dev
+- `pnpm build` - next build
+- `pnpm start` - next start
+- `pnpm typecheck` - tsc --noEmit
+- `pnpm lint` - next lint
+
+## Conventions
+
+### Code Style
+
+#### TypeScript
+
+- Strict null checks
+- No unused any
+- Prefer readonly and const
+
+#### React
+
+- Server components by default, client components only when needed
+- Colocate fragments of UI by feature
+- Keep client hooks lightweight
+
+#### Naming
+
+- Tables: snake_case
+- Columns: snake_case
+- Types: PascalCase
+- Variables: camelCase
+- Events: lower_snake with clear verbs (e.g., `claim_attempt`)
+
+### Commits
+
+- `feat:` - new feature
+- `fix:` - bug fix
+- `chore:` - tooling and deps
+- `refactor:` - no feature change
+- `db:` - migrations and schema
+
+### Pull Request Checklist
+
+- RLS policies updated for any new tables
+- Realtime publication updated if streaming is required
+- Server actions declare runtime nodejs
+- No service role key in client imports
+- Added to game registry if feature is a new game
+- Added tests or manual test notes
+
+## Drizzle Usage
+
+### When to Use Drizzle
+
+- Schema definition and migrations
+- Seeds and data backfills
+- Server actions that need admin-level writes or cross-table transactions
+- Derived snapshot writes to room_state with consistency requirements
+
+### When NOT to Use Drizzle
+
+- Client-side queries under RLS
+- Realtime subscriptions
+- Presence and broadcast
+
+### Notes
+
+- Use `SUPABASE_DB_POOL_URL` with `prepare=false` for runtime
+- Use `DRIZZLE_DATABASE_URL` for migrations and seed
+- Keep migrations idempotent where possible, safe to run in CI
+- Do not create tables without enabling RLS and policies in the same migration
+
+## Supabase JS Usage
+
+### Client Side
+
+- Auth session, sign in, sign out
+- RLS-protected selects and inserts by authenticated users
+- Realtime:
+  - **Presence:** `supabase.channel` with presence config
+  - **Broadcast:** low latency action lane, small payloads
+  - **postgres_changes:** stream room_events and select tables per game
+
+### Server Side
+
+- Reading current user via `createServerClient` in RSC and actions
+- Lightweight reads that must honor RLS for the requesting user
+- Admin tasks should use drizzle with pooled server DB client, not Supabase JS
+
+### Rules
+
+- Enable WAL for rooms, room_players, room_events, and any game tables that need streaming
+- Add new tables to `supabase_realtime` publication in a migration
+- **For UPDATE/DELETE streaming:** Tables must have `REPLICA IDENTITY` set to `FULL` so old/new row images are available for reliable update/delete streams
+
+  ```sql
+  -- Example: Set REPLICA IDENTITY to FULL for a table that needs UPDATE/DELETE streaming
+  ALTER TABLE room_events REPLICA IDENTITY FULL;
+  ```
+
+## Auth and RLS
+
+### Principles
+
+- Everything is private by default
+- Users can only see rooms that are public or rooms they joined
+- Only room members can read and write room_events
+- room_state is readable by members, writable only by service role
+
+### Checks
+
+- New tables must enable RLS and include select and write policies
+- Policies must reference `auth.uid()` where appropriate
+- Add helpful indices if policies filter by user_id or room_id
+
+## State Management
+
+Use **Zustand** as your only client state library for the MVP. Pair it with **TanStack Query** for anything that ultimately comes from the server or DB. Add **Jotai** later only if you hit one of its sweet spots (fine-grained derived state or scoped atoms per room). Running both from day one adds cognitive overhead without a clear win.
+
+### Why Zustand First
+
+- **High-frequency UI fits better.** Realtime cursors, drag positions, transient tool modes, and animation ticks update often; Zustand's external store with selector subscriptions keeps re-renders low and code simple.
+- **Action-centric ergonomics.** Most "game" state changes are verbs. Zustand's tiny action APIs and middleware (persist, devtools, subscribeWithSelector, immer) work well for this.
+- **Easy modular slices.** You can create per-feature or per-room slices and compose them; this keeps state small and focused.
+- **Interops cleanly with Query.** Query owns server truth and caching; Zustand owns ephemeral and optimistic UI. Easy mental model.
+
+### Division of Responsibility
+
+- **TanStack Query**: anything that comes from Supabase or a server action, for example room list, event history, snapshots. Query is the source of truth here; stream updates reconcile into the cache.
+- **Zustand**: ephemeral view state and optimistic intent, for example cursor ghosts, selection, tool state, hovered cell, in-progress polygon, local latency compensation.
+- **Supabase Realtime**: presence, broadcast intent, postgres_changes stream for authoritative events.
+- **Drizzle**: server-side authority writes, migrations, seeds, snapshots.
+
+### Anti-patterns to Avoid
+
+- Duplicating DB truth in client stores long term. Let Query cache and the stream own it; store only optimistic deltas or UI.
+- One giant global store. Keep per-feature or per-room slices; unsubscribe aggressively with selectors.
+- Broadcasting per keystroke. Batch or debounce; keep broadcast payloads small.
+
+### Practical Patterns
+
+#### 1) A per-room Zustand slice (recommended)
+
+```typescript
+// src/store/roomStore.ts
+import { create } from "zustand";
+import { subscribeWithSelector } from "zustand/middleware";
+
+type Cursor = { x: number; y: number };
+type Tool = "select" | "draw" | "erase";
+
+type RoomSlice = {
+  tool: Tool;
+  setTool: (t: Tool) => void;
+
+  myCursor: Cursor | null;
+  setCursor: (c: Cursor) => void;
+
+  // opponent cursors keyed by presence id
+  cursors: Record<string, Cursor>;
+  updateCursor: (id: string, c: Cursor) => void;
+  removeCursor: (id: string) => void;
+
+  // optimistic actions not yet confirmed by DB
+  optimisticQueue: Array<{ id: string; type: string; payload: unknown }>;
+  enqueue: (e: { id: string; type: string; payload: unknown }) => void;
+  dequeue: (id: string) => void;
+
+  reset: () => void;
+};
+
+export const useRoomStore = create<RoomSlice>()(
+  subscribeWithSelector((set) => ({
+    tool: "select",
+    setTool: (t) => set({ tool: t }),
+
+    myCursor: null,
+    setCursor: (c) => set({ myCursor: c }),
+
+    cursors: {},
+    updateCursor: (id, c) =>
+      set((s) => ({ cursors: { ...s.cursors, [id]: c } })),
+    removeCursor: (id) =>
+      set((s) => {
+        const next = { ...s.cursors };
+        delete next[id];
+        return { cursors: next };
+      }),
+
+    optimisticQueue: [],
+    enqueue: (e) =>
+      set((s) => ({ optimisticQueue: [...s.optimisticQueue, e] })),
+    dequeue: (id) =>
+      set((s) => ({
+        optimisticQueue: s.optimisticQueue.filter((x) => x.id !== id),
+      })),
+
+    reset: () =>
+      set({
+        tool: "select",
+        myCursor: null,
+        cursors: {},
+        optimisticQueue: [],
+      }),
+  }))
+);
+
+// Usage: const tool = useRoomStore(s => s.tool)
+```
+
+**Notes:**
+
+- Use selectors when subscribing in components, for example `useRoomStore(s => s.tool)` to avoid broad re-renders.
+- For many rooms, create a keyed map of stores or pass roomId into a factory so each room view uses its own instance.
+
+#### 2) Query for server truth with stream reconciliation
+
+````typescript
+// Load latest snapshot for room
+const snapshotQuery = useQuery({
+  queryKey: ["room_state", roomId],
+  queryFn: async () => {
+    const { data, error } = await supabase
+      .from("room_state")
+      .select("snapshot, updated_at")
+      .eq("room_id", roomId)
+      .maybeSingle();
+    if (error) throw error;
+    return data?.snapshot ?? null;
+  },
+  refetchOnWindowFocus: false,
+});
+
+// Subscribe to authoritative events
+useEffect(() => {
+  const ch = supabase
+    .channel(`room:${roomId}:events`)
+    .on(
+      "postgres_changes",
+      {
+        event: "INSERT",
+        schema: "public",
+        table: "room_events",
+        filter: `room_id=eq.${roomId}`,
+      },
+      (msg) => {
+        // Reconcile local optimistic state here if needed
+        // Optionally invalidate or patch Query caches
+        queryClient.invalidateQueries({ queryKey: ["room_events", roomId] });
+      }
+    )
+    .subscribe();
+  return () => { void supabase.removeChannel(ch); };
+}, [roomId]);
+
+#### 3) If you later need Jotai, add it in a scoped way
+
+Use it for derived state or per-room Providers, not globally.
+
+```typescript
+// src/games/<slug>/state.ts
+import { atom } from "jotai";
+export const pointsAtom = atom<Record<string, number>>({});
+export const totalAtom = atom((get) =>
+  Object.values(get(pointsAtom)).reduce((a, b) => a + b, 0)
+);
+
+// In the room page:
+import { Provider as JotaiProvider } from "jotai";
+<JotaiProvider>
+  <GameClient roomId={roomId} />
+</JotaiProvider>;
+````
+
+This lets you keep Jotai optional and localized.
+
+### Realtime Flow
+
+1. Broadcast an action for immediate UI intent
+2. Persist authoritative event via insert into room_events (client if allowed, server action if validation is required)
+3. Stream INSERT via postgres_changes for reconciliation
+4. Optional snapshot: write summarized state to room_state in a server action
+
+### Recommendation Summary
+
+- Start with **Zustand only** for client state. It matches realtime game ergonomics, keeps renders tight, and is easy to reason about.
+- Keep **TanStack Query** as the source of truth for server data; reconcile via streams.
+- Bring in **Jotai** later only where you need fine-grained derived graphs or a scoped atom model. Keep it localized to that game, not the entire app.
+
+## Game Module Contract
+
+### Descriptor
+
+- `slug`: unique, stable
+- `name`: display name
+- `channelEvents.action`: list of allowed broadcast types for the game
+- `load()`: dynamic import of Client component
+
+### Client Component
+
+- Props: `{ roomId: string }`
+- Opens presence+broadcast channel `"room:<id>"`, and a postgres_changes channel for room_events
+- Initializes Query cache from room_state then replays live events
+
+### Database
+
+- Use the shared tables for events and state
+- Add per-game tables only when necessary, with RLS and publication updates
+
+### Registry
+
+- `src/lib/games/registry.ts` is the single place to register a game
+
+## Room Lifecycle
+
+### Lobby
+
+- Host creates room, auto joins as host
+- Other users join, role=player or spectator
+
+### Active
+
+- Host starts game, write started_at and status=active
+- Broadcast tick optional, keep server authoritative writes minimal
+
+### Ended
+
+- Write ended_at and status=ended
+- Lock writes except admin post-processing
+
+### Recovery
+
+- Late joiners load room_state then subscribe to room_events tail
+- Clients reconcile divergence with snapshot version
+
+## Security
+
+### Rules
+
+- Never use service role in the browser
+- Validate user actions on server when they affect scoring or other users
+- Rate limit sensitive server actions with simple token bucket or time checks
+- Sanitize user-generated content, limit payload sizes in broadcast
+
+### Content Security Policy (CSP)
+
+- Implement strict CSP with `script-src 'self'` plus explicit Vercel domains
+- Set `connect-src` to include Supabase and approved APIs only
+- Use `frame-ancestors 'none'` to prevent clickjacking (equivalent to `X-Frame-Options: DENY`)
+- Example CSP header:
+
+  ```http
+  Content-Security-Policy: script-src 'self' 'unsafe-inline' https://vercel.live; connect-src 'self' https://*.supabase.co https://*.vercel.app; frame-ancestors 'none'; object-src 'none'; base-uri 'self'
+  ```
+
+### CSRF Protection
+
+- Require CSRF protection on all non-GET mutating endpoints
+- Implement double-submit cookie pattern or verify Origin/Referer headers
+- Reject requests with mismatched Origin/Referer headers
+- Use SameSite cookie attributes for additional protection
+
+### PostMessage Security
+
+- Validate all postMessage events by checking `event.origin` against an allowlist
+- Only process messages from trusted origins (e.g., same domain, approved parent domains)
+- Never trust message content without origin validation
+
+### Payload and Rate Limiting
+
+- Enforce server-side broadcast payload size limits (e.g., 1KB max per message)
+- Implement token-bucket rate limiting for broadcast channels per user
+- Add time-based rate limits (e.g., max 10 messages per second per user)
+- Apply stricter limits for sensitive operations (e.g., room creation, user management)
+
+### RLS Testing
+
+- Write small SQL probes in migration PR to verify policies
+
+## Performance
+
+### Guidelines
+
+- Keep broadcast payloads under a few hundred bytes
+- Prefer JSON schema that allows partial updates
+- Paginate room_events and limit live tail to the last N entries
+- Use memoization and windowing for large lists
+- Avoid re-subscribing channels on every render
+
+## Observability
+
+### Logging
+
+- Log important server actions with roomId, userId, type
+- Redact PII and auth tokens
+
+### Metrics
+
+- Track channel subscribe time, reconnect counts, dropped events
+
+### Errors
+
+- Surface toast notifications for realtime disconnects and policy denials
+
+## Testing
+
+### Levels
+
+- **Unit:** pure reducers, utilities, validation
+- **Component:** client components with mocked Supabase client
+- **Integration:** server actions with an ephemeral database or test schema
+- **E2E:** Playwright basic flows, login, create room, join, send action, see event
+
+### Seeds
+
+- Seed at least two games and a demo public room for manual testing
+
+## Deployment
+
+### Vercel
+
+- Set all env vars in Preview and Production
+- Never run migrations in Vercel build step
+
+### CI
+
+- **Migration Safety:** Never auto-run `pnpm drizzle:migrate` on production
+- **Environment Guards:** Only run migrations when `ENV != production` or `PROCEED_MIGRATION=true`
+- **Manual Approval:** Use GitHub Actions environment protection or `workflow_dispatch` with required reviewers for production migrations
+- **Secrets Scope:** Limit DB credentials to non-production environments only
+- **Seeding:** Keep `pnpm db:seed` strictly optional and scoped to non-prod runs only
+- **Example workflow pattern:**
+
+  ```yaml
+  - name: Run Migrations
+    if: env.ENV != 'production' || env.PROCEED_MIGRATION == 'true'
+    run: pnpm drizzle:migrate
+    env:
+      DRIZZLE_DATABASE_URL: ${{ secrets.NON_PROD_DB_URL }}
+  ```
+
+### Supabase
+
+- Add vercel domains to Auth redirect allowlist
+- Confirm WAL enabled for realtime tables
+
+## Common Tasks
+
+### Create Room
+
+- Server action uses drizzle to insert rooms and room_players, then redirect
+
+### Append Event
+
+- If trivial and allowed by RLS, client inserts into room_events
+- If validation or cross-writes required, call server action using drizzle
+
+### Snapshot State
+
+- Server action computes snapshot from recent events and writes to room_state with service role
+
+### Add Game
+
+- Add registry entry, create Client.tsx, seed games row, optional tables with RLS, update publication
+
+## Lint Rules for AI
+
+### Do
+
+- Prefer server components; use "use client" only when needed
+- Keep new tables behind RLS with policies in same migration
+- Use drizzle for schema and server writes that need authority
+- Use Supabase JS for client reads under RLS and for realtime
+- Keep actions small, composable, and typed
+
+### Avoid
+
+- Writing SQL directly into Supabase editor
+- Importing service role key in client bundles
+- Mixing game-specific logic into shared shell components
+- Oversized broadcast messages or per-keystroke DB writes
+
+## File Templates
+
+### Server Action Header
+
+```typescript
 "use server";
 export const runtime = "nodejs";
-client_component_header: |
+```
+
+### Client Component Header
+
+```typescript
 "use client";
+```
 
-review_examples:
-adding_new_table: - write drizzle schema - generate migration - manual migration to add RLS, policies, indexes, publication - migrate, seed if needed
-adding_new_realtime_stream: - ensure WAL is enabled and table is in publication - subscribe via supabase.channel with postgres_changes filter - test insert, verify client receives payload
+## Review Examples
 
-acceptance_criteria_for_prs:
+### Adding New Table
+
+1. Write drizzle schema
+2. Generate migration
+3. Manual migration to add RLS, policies, indexes, publication
+4. Migrate, seed if needed
+
+### Adding New Realtime Stream
+
+1. Ensure WAL is enabled and table is in publication
+2. Subscribe via supabase.channel with postgres_changes filter
+3. Test insert, verify client receives payload
+
+## Acceptance Criteria for PRs
 
 - App starts without runtime errors
 - TypeScript passes
