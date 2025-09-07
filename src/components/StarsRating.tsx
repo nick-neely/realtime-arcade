@@ -36,24 +36,20 @@ export function StarsRating({ className = "", delay = 0 }: StarsRatingProps) {
     loadAnimation();
   }, [delay]);
 
-  // Show just the text until animation is loaded to prevent flash
-  if (!isLoaded || !animationData) {
-    return (
-      <div className={`flex items-center ${className}`}>
-        <span>4.9/5 rating</span>
-      </div>
-    );
-  }
-
   return (
     <div className={`flex items-center ${className}`}>
-      <div className="h-4 w-16">
-        <LottieAnimation
-          animationData={animationData}
-          autoplay={true}
-          loop={false}
-          speed={1}
-        />
+      <div className="h-4 w-16 flex items-center justify-center">
+        {isLoaded && animationData ? (
+          <LottieAnimation
+            animationData={animationData}
+            autoplay={true}
+            loop={false}
+            speed={1}
+            className="mt-3"
+          />
+        ) : (
+          <span className="text-xs opacity-0">4.9</span>
+        )}
       </div>
       <span className="ml-1">4.9/5 rating</span>
     </div>

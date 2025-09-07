@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import type { Tables } from "@/lib/supabase/database.types";
 import { createSupabaseServer } from "@/lib/supabase/server";
 import { Gamepad2, Users } from "lucide-react";
@@ -35,19 +36,21 @@ export default async function Play() {
             {rooms && rooms.length > 0 ? (
               <div className="grid gap-4">
                 {rooms.map((r: RoomListRow) => (
-                  <div
+                  <Card
                     key={r.id}
-                    className="flex items-center justify-between border-2 border-foreground rounded-none p-4 bg-card shadow-lg hover:shadow-xl transition-shadow"
+                    className="flex items-center justify-between border-2 border-foreground rounded-none p-4 bg-card"
                   >
                     <div className="flex items-center space-x-4">
-                      <div className="w-10 h-10 bg-primary/10 border-2 border-foreground rounded-none flex items-center justify-center shadow-sm">
+                      <div className="w-10 h-10 bg-primary/10 border-2 border-foreground rounded-none flex items-center justify-center shadow-xs">
                         <Gamepad2 className="h-5 w-5 text-primary" />
                       </div>
                       <div>
-                        <h3 className="font-semibold">{r.games.name}</h3>
-                        <p className="text-sm text-muted-foreground">
+                        <CardTitle className="font-semibold">
+                          {r.games.name}
+                        </CardTitle>
+                        <CardDescription className="text-sm text-muted-foreground">
                           Status: {r.status}
-                        </p>
+                        </CardDescription>
                       </div>
                     </div>
                     <Link href={`/games/${r.games.slug}/${r.id}`}>
@@ -56,12 +59,12 @@ export default async function Play() {
                         Join Room
                       </Button>
                     </Link>
-                  </div>
+                  </Card>
                 ))}
               </div>
             ) : (
               <div className="text-center py-12">
-                <div className="w-16 h-16 bg-muted border-2 border-foreground rounded-none flex items-center justify-center mx-auto mb-4 shadow-sm">
+                <div className="w-16 h-16 bg-muted border-2 border-foreground rounded-none flex items-center justify-center mx-auto mb-4 shadow-xs">
                   <Gamepad2 className="h-8 w-8 text-muted-foreground" />
                 </div>
                 <h3 className="text-lg font-semibold mb-2">No active rooms</h3>

@@ -15,7 +15,7 @@ export default async function DashboardLayout({
   return (
     <div className="min-h-screen bg-background">
       {/* Navigation Header */}
-      <header className="border-b-2 border-foreground bg-background shadow-sm">
+      <header className="border-b-2 border-foreground bg-background">
         <div className="container mx-auto px-4">
           <div className="flex h-16 items-center justify-between">
             {/* Logo/Brand */}

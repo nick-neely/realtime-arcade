@@ -83,6 +83,15 @@ Custom rules for the "Realtime Arcade" project to give AI and developers a singl
 - Client code should only use `NEXT_PUBLIC_` vars
 - All server actions that import db client must set `export const runtime = "nodejs"`
 
+## Package Manager
+
+**Use pnpm as the package manager for all operations:**
+
+- Install dependencies: `pnpm install`
+- Add packages: `pnpm add <package>`
+- Run scripts: `pnpm run <script>`
+- Use pnpm dlx for one-time commands: `pnpm dlx <command>`
+
 ## Package Scripts
 
 ### Setup
@@ -94,17 +103,17 @@ pnpm dlx shadcn@latest add button card input label badge avatar dropdown-menu di
 
 ### Database
 
-- `drizzle:generate` - drizzle-kit generate
-- `drizzle:migrate` - tsx ./src/db/run-migrations.ts
-- `db:seed` - tsx ./src/db/seed.ts
+- `pnpm drizzle:generate` - drizzle-kit generate
+- `pnpm drizzle:migrate` - tsx ./src/db/run-migrations.ts
+- `pnpm db:seed` - tsx ./src/db/seed.ts
 
 ### Development
 
-- `dev` - next dev
-- `build` - next build
-- `start` - next start
-- `typecheck` - tsc --noEmit
-- `lint` - next lint
+- `pnpm dev` - next dev
+- `pnpm build` - next build
+- `pnpm start` - next start
+- `pnpm typecheck` - tsc --noEmit
+- `pnpm lint` - next lint
 
 ## Conventions
 
@@ -487,8 +496,8 @@ This lets you keep Jotai optional and localized.
 
 ### CI
 
-- Run `drizzle:migrate` on merge to main via GitHub Actions
-- Optional: run `db:seed` on non-prod
+- Run `pnpm drizzle:migrate` on merge to main via GitHub Actions
+- Optional: run `pnpm db:seed` on non-prod
 
 ### Supabase
 

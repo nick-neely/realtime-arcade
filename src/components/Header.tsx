@@ -41,7 +41,7 @@ export function Header() {
   };
 
   return (
-    <header className="border-b-2 border-foreground bg-background shadow-sm">
+    <header className="border-b-2 border-foreground bg-background">
       <div className="container mx-auto px-4 py-6">
         <nav className="flex items-center justify-between">
           <Link href="/" className="flex items-center space-x-2">

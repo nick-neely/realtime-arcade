@@ -14,7 +14,6 @@ import {
   Clock,
   Gamepad2,
   Play,
-  Star,
   Trophy,
   Users,
   Zap,
@@ -35,6 +34,19 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
+            <motion.div
+              className="flex items-center space-x-1"
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{
+                duration: 0.4,
+                delay: 0.4,
+                type: "spring",
+                stiffness: 300,
+              }}
+            >
+              <StarsRating delay={400} />
+            </motion.div>
             <div className="flex items-center space-x-2">
               <div className="flex -space-x-2">
                 {[1, 2, 3, 4].map((i) => (
@@ -45,7 +57,7 @@ export default function Home() {
                     animate={{ scale: 1, rotate: 0 }}
                     transition={{
                       duration: 0.5,
-                      delay: 0.4 + i * 0.1,
+                      delay: 0.8 + i * 0.1,
                       type: "spring",
                       stiffness: 200,
                     }}
@@ -54,19 +66,6 @@ export default function Home() {
               </div>
               <span>Join 10,000+ players</span>
             </div>
-            <motion.div
-              className="flex items-center space-x-1"
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{
-                duration: 0.4,
-                delay: 0.8,
-                type: "spring",
-                stiffness: 300,
-              }}
-            >
-              <StarsRating delay={1000} />
-            </motion.div>
           </motion.div>
 
           {/* Main Headline */}
@@ -114,7 +113,7 @@ export default function Home() {
               whileHover={{ scale: 1.02 }}
               transition={{ type: "spring", stiffness: 300, damping: 20 }}
             >
-              <Card className="max-w-2xl mx-auto border-2 border-foreground shadow-lg rounded-none">
+              <Card className="max-w-2xl mx-auto border-2 border-foreground rounded-none">
                 <CardHeader className="text-center pb-4 pt-6">
                   <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
@@ -148,20 +147,21 @@ export default function Home() {
                 </CardHeader>
                 <CardContent className="pt-0 pb-6">
                   <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                    <Link href="/login">
-                      <motion.div
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        transition={{
-                          type: "spring",
-                          stiffness: 400,
-                          damping: 17,
-                        }}
+                    <motion.div
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 400,
+                        damping: 17,
+                      }}
+                    >
+                      <Button
+                        asChild
+                        size="lg"
+                        className="text-lg px-8 py-6 bg-primary hover:bg-primary/90 rounded-none shadow-lg"
                       >
-                        <Button
-                          size="lg"
-                          className="text-lg px-8 py-6 bg-primary hover:bg-primary/90 rounded-none shadow-lg"
-                        >
+                        <Link href="/login">
                           <motion.div
                             animate={{ x: [0, 3, 0] }}
                             transition={{
@@ -183,29 +183,30 @@ export default function Home() {
                           >
                             <ArrowRight className="h-5 w-5 ml-2" />
                           </motion.div>
-                        </Button>
-                      </motion.div>
-                    </Link>
-                    <Link href="/play">
-                      <motion.div
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        transition={{
-                          type: "spring",
-                          stiffness: 400,
-                          damping: 17,
-                        }}
+                        </Link>
+                      </Button>
+                    </motion.div>
+                    <motion.div
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 400,
+                        damping: 17,
+                      }}
+                    >
+                      <Button
+                        asChild
+                        size="lg"
+                        variant="outline"
+                        className="text-lg px-8 py-6 rounded-none border-2 hover:border-foreground"
                       >
-                        <Button
-                          size="lg"
-                          variant="outline"
-                          className="text-lg px-8 py-6 rounded-none border-2 hover:border-foreground"
-                        >
+                        <Link href="/play">
                           <Users className="h-5 w-5 mr-2" />
                           Watch Live Games
-                        </Button>
-                      </motion.div>
-                    </Link>
+                        </Link>
+                      </Button>
+                    </motion.div>
                   </div>
                 </CardContent>
               </Card>
@@ -372,7 +373,7 @@ export default function Home() {
                   }}
                 >
                   <motion.div
-                    className="w-16 h-16 bg-primary/10 border-2 border-foreground shadow-lg rounded-none flex items-center justify-center mx-auto"
+                    className="w-16 h-16 bg-primary/10 border-2 border-foreground shadow-xs rounded-none flex items-center justify-center mx-auto"
                     whileHover={{
                       scale: 1.05,
                       rotate: 2,
@@ -416,7 +417,7 @@ export default function Home() {
             whileHover={{ scale: 1.02 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
           >
-            <Card className="max-w-4xl mx-auto border-2 border-foreground shadow-xl rounded-none">
+            <Card className="max-w-4xl mx-auto border-2 border-foreground rounded-none">
               <CardHeader className="text-center pb-6">
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
@@ -442,20 +443,21 @@ export default function Home() {
               </CardHeader>
               <CardContent className="pt-0">
                 <div className="flex flex-col sm:flex-row gap-4 justify-center mb-6">
-                  <Link href="/login">
-                    <motion.div
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      transition={{
-                        type: "spring",
-                        stiffness: 400,
-                        damping: 17,
-                      }}
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 400,
+                      damping: 17,
+                    }}
+                  >
+                    <Button
+                      asChild
+                      size="lg"
+                      className="text-lg px-10 py-6 bg-primary hover:bg-primary/90 rounded-none shadow-lg"
                     >
-                      <Button
-                        size="lg"
-                        className="text-lg px-10 py-6 bg-primary hover:bg-primary/90 rounded-none shadow-lg"
-                      >
+                      <Link href="/login">
                         <motion.div
                           animate={{ rotate: [0, 10, -10, 0] }}
                           transition={{
@@ -477,29 +479,30 @@ export default function Home() {
                         >
                           <ArrowRight className="h-6 w-6 ml-2" />
                         </motion.div>
-                      </Button>
-                    </motion.div>
-                  </Link>
-                  <Link href="/play">
-                    <motion.div
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      transition={{
-                        type: "spring",
-                        stiffness: 400,
-                        damping: 17,
-                      }}
+                      </Link>
+                    </Button>
+                  </motion.div>
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 400,
+                      damping: 17,
+                    }}
+                  >
+                    <Button
+                      asChild
+                      size="lg"
+                      variant="outline"
+                      className="text-lg px-10 py-6 rounded-none border-2 hover:border-foreground"
                     >
-                      <Button
-                        size="lg"
-                        variant="outline"
-                        className="text-lg px-10 py-6 rounded-none border-2 hover:border-foreground"
-                      >
+                      <Link href="/play">
                         <Users className="h-6 w-6 mr-2" />
                         Browse Live Games
-                      </Button>
-                    </motion.div>
-                  </Link>
+                      </Link>
+                    </Button>
+                  </motion.div>
                 </div>
                 <motion.p
                   className="text-sm text-muted-foreground text-center"
