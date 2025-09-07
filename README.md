@@ -2,6 +2,8 @@
 
 Multi-game realtime web app with a shared hub and pluggable games.
 
+<img width="925" height="821" alt="image" src="https://github.com/user-attachments/assets/cba71b80-58b1-4c1d-bf2e-84da4eae6131" />
+
 Built with Next.js 15 (App Router), TypeScript, TailwindCSS, shadcn/ui, Supabase Realtime (presence, broadcast, postgres_changes), and Drizzle ORM for schema and migrations. State uses TanStack Query for server data and Zustand for ephemeral UI.
 
 This README is the single source of truth for setup, architecture, conventions, and workflows.
