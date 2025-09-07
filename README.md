@@ -4,7 +4,7 @@ Multi-game realtime web app with a shared hub and pluggable games.
 
 <img width="925" height="821" alt="image" src="https://github.com/user-attachments/assets/cba71b80-58b1-4c1d-bf2e-84da4eae6131" />
 
-Built with Next.js 15 (App Router), TypeScript, TailwindCSS, shadcn/ui, Supabase Realtime (presence, broadcast, postgres_changes), and Drizzle ORM for schema and migrations. State uses TanStack Query for server data and Zustand for ephemeral UI.
+Built with Next.js 15 (App Router), TypeScript, TailwindCSS, shadcn/ui, Supabase Realtime (presence, broadcast, postgres_changes), and Drizzle ORM for schema and migrations. State uses TanStack Query for server data and Zustand for ephemeral UI. Features a neo-brutalist design aesthetic with motion/react animations.
 
 This README is the single source of truth for setup, architecture, conventions, and workflows.
 
@@ -18,6 +18,7 @@ This README is the single source of truth for setup, architecture, conventions, 
 ![Drizzle](https://img.shields.io/badge/Drizzle-0.44.4-orange?style=for-the-badge&logo=drizzle)
 ![Node.js](https://img.shields.io/badge/Node.js-20-green?style=for-the-badge&logo=node.js)
 ![pnpm](https://img.shields.io/badge/pnpm-10.7.1-F69220?style=for-the-badge&logo=pnpm)
+![Motion](https://img.shields.io/badge/Motion-React-FF6B6B?style=for-the-badge&logo=framer)
 
 ---
 
@@ -46,6 +47,10 @@ This README is the single source of truth for setup, architecture, conventions, 
   - [Security and RLS](#security-and-rls)
   - [Performance tips](#performance-tips)
   - [Testing](#testing)
+  - [Styling and Design](#styling-and-design)
+    - [Design Principles](#design-principles)
+    - [Color System](#color-system)
+    - [Animations](#animations)
   - [Troubleshooting](#troubleshooting)
   - [Conventions](#conventions)
   - [License](#license)
@@ -449,6 +454,39 @@ You can also run seeds in non production environments.
 Seeds
 
 - Keep at least two demo games and a public room for manual verification.
+
+---
+
+## Styling and Design
+
+The project follows a **neo-brutalist** design philosophy with bold, functional visual elements and purposeful animations.
+
+### Design Principles
+
+- **Bold but not flashy**: Strong visual presence without overwhelming motion
+- **Functional over decorative**: Every visual element serves a purpose
+- **Sharp edges**: No rounded corners, maintaining geometric precision
+- **High contrast**: Bold color combinations with strong shadows
+- **Consistent timing**: All animations use similar durations (0.4s)
+
+### Color System
+
+- **Primary**: Orange-red accent for key actions
+- **Secondary**: Bright yellow-green for highlights
+- **Accent**: Purple-blue for special elements
+- **Background**: Pure white/black with no gradients
+- **Borders**: High contrast black/white borders
+
+### Animations
+
+Uses `motion/react` (formerly Framer Motion) for micro-interactions:
+
+- **Button feedback**: Essential hover/tap responses
+- **Card hover effects**: Subtle lift animations
+- **Icon scaling**: Minimal feedback on interactive elements
+- **Content reveals**: Clean fade-ins for new content
+
+All animations respect `prefers-reduced-motion` and follow neo-brutalist principles of bold, functional motion.
 
 ---
 

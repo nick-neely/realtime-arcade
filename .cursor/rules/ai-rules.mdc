@@ -23,6 +23,7 @@ Custom rules for the "Realtime Arcade" project to give AI and developers a singl
 - **Framework:** Next.js 15
 - **Language:** TypeScript (strict mode)
 - **Styling:** TailwindCSS, shadcn/ui
+- **Animation:** motion (motion/react), lottie-react
 - **Data:**
   - Primary: Supabase Postgres
   - ORM: Drizzle ORM + postgres-js
@@ -155,6 +156,187 @@ pnpm dlx shadcn@latest add button card input label badge avatar dropdown-menu di
 - No service role key in client imports
 - Added to game registry if feature is a new game
 - Added tests or manual test notes
+
+## Styling and Design
+
+### Neo-Brutalism Aesthetic
+
+The project follows a **neo-brutalism** design philosophy with bold, functional, and unapologetically direct visual elements. This aesthetic is defined in `src/app/globals.css` and should be consistently applied across all custom components.
+
+#### Core Design Principles
+
+- **Bold but not flashy**: Strong visual presence without overwhelming motion
+- **Functional over decorative**: Every visual element serves a purpose
+- **Consistent timing**: All animations use similar durations (0.4s)
+- **Minimal complexity**: Simple transforms (scale, translate) instead of complex sequences
+- **Sharp edges**: No rounded corners (`--radius: 0px`)
+- **High contrast**: Bold color combinations with strong shadows
+
+#### Color System
+
+The color palette is defined using CSS custom properties in `globals.css`:
+
+- **Primary**: Orange-red accent (`oklch(0.6489 0.237 26.9728)`)
+- **Secondary**: Bright yellow-green (`oklch(0.968 0.211 109.7692)`)
+- **Accent**: Purple-blue (`oklch(0.5635 0.2408 260.8178)`)
+- **Background**: Pure white/black with no gradients
+- **Borders**: High contrast black/white borders
+
+#### Shadow System
+
+Neo-brutalist shadows are bold and offset:
+
+```css
+--shadow-sm: 4px 4px 0px 0px hsl(0 0% 0% / 1), 4px 1px 2px -1px hsl(0 0% 0% / 1);
+--shadow: 4px 4px 0px 0px hsl(0 0% 0% / 1), 4px 1px 2px -1px hsl(0 0% 0% / 1);
+--shadow-lg: 4px 4px 0px 0px hsl(0 0% 0% / 1), 4px 4px 6px -1px hsl(0 0% 0% / 1);
+```
+
+#### Typography
+
+- **Primary font**: DM Sans (clean, modern sans-serif)
+- **Monospace**: Space Mono (for code and technical elements)
+- **No rounded corners**: All elements maintain sharp, geometric edges
+- **High contrast**: Black text on white backgrounds, white text on dark backgrounds
+
+#### Custom Component Guidelines
+
+When creating custom Tailwind components (non-shadcn/ui):
+
+1. **Use CSS custom properties**: Reference variables from `globals.css`
+2. **Apply neo-brutalist shadows**: Use `shadow-sm`, `shadow`, or `shadow-lg` classes
+3. **Maintain sharp edges**: Never use `rounded-*` classes
+4. **High contrast borders**: Use `border-2` or `border-4` with `border-black` or `border-white`
+5. **Bold color combinations**: Use primary, secondary, and accent colors boldly
+6. **Consistent spacing**: Use the `--spacing` variable (0.25rem) for consistent gaps
+
+### Animations with Motion/React
+
+Use the `motion/react` package (formerly Framer Motion) for all animations, following neo-brutalist principles.
+
+#### Animation Philosophy
+
+- **Bold but not flashy**: Strong visual presence without overwhelming motion
+- **Functional over decorative**: Animations serve user feedback, not entertainment
+- **Consistent timing**: All animations use similar durations (0.4s)
+- **Minimal complexity**: Simple transforms (scale, translate) instead of complex sequences
+
+#### What's Preserved (Micro-interactions)
+
+- **Button hover/tap feedback**: Essential for user interaction
+- **Card hover effects**: Subtle lift animations for visual feedback
+- **Icon hover scaling**: Minimal feedback on interactive elements
+- **Opacity transitions**: Clean fade-ins for content reveal
+
+#### Animation Patterns
+
+##### 1. Button Interactions
+
+```tsx
+import { motion } from "motion/react";
+
+<motion.button
+  whileHover={{
+    scale: 1.05,
+    boxShadow: "6px 6px 0px 0px hsl(0 0% 0% / 1)",
+  }}
+  whileTap={{
+    scale: 0.95,
+    x: 2,
+    y: 2,
+    boxShadow: "2px 2px 0px 0px hsl(0 0% 0% / 1)",
+  }}
+  transition={{ duration: 0.2, ease: "easeOut" }}
+  className="bg-primary text-primary-foreground border-2 border-black shadow-lg"
+>
+  Click Me
+</motion.button>;
+```
+
+##### 2. Card Hover Effects
+
+```tsx
+<motion.div
+  whileHover={{
+    y: -4,
+    boxShadow: "8px 8px 0px 0px hsl(0 0% 0% / 1)",
+  }}
+  transition={{ duration: 0.3, ease: "easeOut" }}
+  className="bg-card border-2 border-black shadow-lg p-6"
+>
+  Card content
+</motion.div>
+```
+
+##### 3. Icon Scaling
+
+```tsx
+<motion.div
+  whileHover={{ scale: 1.1 }}
+  whileTap={{ scale: 0.9 }}
+  transition={{ duration: 0.2 }}
+  className="cursor-pointer"
+>
+  <Icon className="w-6 h-6" />
+</motion.div>
+```
+
+##### 4. Content Reveals
+
+```tsx
+<motion.div
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.4, ease: "easeOut" }}
+>
+  Content that fades in
+</motion.div>
+```
+
+#### Animation Guidelines
+
+- **Duration**: Use 0.2s for micro-interactions, 0.4s for content reveals
+- **Easing**: Prefer `easeOut` for natural feeling animations
+- **Transform origin**: Keep at center unless specifically needed otherwise
+- **Performance**: Use `transform` and `opacity` properties for smooth animations
+- **Accessibility**: Respect `prefers-reduced-motion` with conditional animations
+
+#### Reduced Motion Support
+
+```tsx
+import { motion, useReducedMotion } from "motion/react";
+
+const shouldReduceMotion = useReducedMotion();
+
+<motion.div
+  animate={
+    shouldReduceMotion
+      ? {}
+      : {
+          opacity: 1,
+          y: 0,
+        }
+  }
+  initial={
+    shouldReduceMotion
+      ? {}
+      : {
+          opacity: 0,
+          y: 20,
+        }
+  }
+>
+  Content
+</motion.div>;
+```
+
+#### Anti-patterns to Avoid
+
+- **Over-animation**: Don't animate every element
+- **Complex sequences**: Avoid multi-step animation chains
+- **Slow animations**: Keep durations under 0.5s
+- **Bouncy easing**: Avoid `spring` or `bounce` effects
+- **Continuous motion**: No infinite loops or constant movement
 
 ## Drizzle Usage
 
