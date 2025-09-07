@@ -42,10 +42,12 @@ export async function login(formData: FormData) {
  */
 export async function loginWithGitHub(formData: FormData) {
   const supabase = await createSupabaseServer();
-  
-  const next = String(formData.get("next") ?? "/dashboard");
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL!;
-  const redirectTo = `${siteUrl}/auth/callback?next=${encodeURIComponent(next)}`;
+
+  const rawNext = String(formData.get("next") ?? "/dashboard");
+  const next = rawNext.startsWith("/") ? rawNext : "/dashboard";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+  if (!siteUrl) redirect("/login?error=misconfigured_site_url");
+  const redirectTo = `${siteUrl.replace(/\/+$/, "")}/auth/callback?next=${encodeURIComponent(next)}`;
 
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'github',

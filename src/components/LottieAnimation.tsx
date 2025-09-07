@@ -1,7 +1,7 @@
 "use client";
 
 import Lottie from "lottie-react";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 
 interface LottieAnimationProps {
   animationData: any;
@@ -22,14 +22,15 @@ export function LottieAnimation({
 }: LottieAnimationProps) {
   const lottieRef = useRef<any>(null);
 
-  const defaultOptions = {
-    loop,
-    autoplay,
-    animationData,
-    rendererSettings: {
-      preserveAspectRatio: "xMidYMid slice",
-    },
-  };
+  useEffect(() => {
+    if (lottieRef.current && typeof speed === "number") {
+      try {
+        lottieRef.current.setSpeed(speed);
+      } catch {
+        // ignore if ref not ready
+      }
+    }
+  }, [speed]);
 
   return (
     <Lottie
@@ -38,7 +39,6 @@ export function LottieAnimation({
       className={className}
       loop={loop}
       autoplay={autoplay}
-      speed={speed}
       onComplete={onComplete}
     />
   );

@@ -12,8 +12,7 @@ export function ConditionalLayout({ children }: ConditionalLayoutProps) {
   const pathname = usePathname();
 
   // Check if we're in a dashboard route
-  const isDashboardRoute =
-    pathname.startsWith("/dashboard") || pathname.startsWith("/games/");
+  const isDashboardRoute = /^\/(dashboard|games)(\/|$)/.test(pathname);
 
   // Check if we're on the landing page
   const isLandingPage = pathname === "/";

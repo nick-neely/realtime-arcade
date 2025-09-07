@@ -199,6 +199,12 @@ pnpm dlx shadcn@latest add button card input label badge avatar dropdown-menu di
 
 - Enable WAL for rooms, room_players, room_events, and any game tables that need streaming
 - Add new tables to `supabase_realtime` publication in a migration
+- **For UPDATE/DELETE streaming:** Tables must have `REPLICA IDENTITY` set to `FULL` so old/new row images are available for reliable update/delete streams
+
+  ```sql
+  -- Example: Set REPLICA IDENTITY to FULL for a table that needs UPDATE/DELETE streaming
+  ALTER TABLE room_events REPLICA IDENTITY FULL;
+  ```
 
 ## Auth and RLS
 
@@ -317,7 +323,7 @@ export const useRoomStore = create<RoomSlice>()(
 
 #### 2) Query for server truth with stream reconciliation
 
-```typescript
+````typescript
 // Load latest snapshot for room
 const snapshotQuery = useQuery({
   queryKey: ["room_state", roomId],
@@ -372,7 +378,7 @@ import { Provider as JotaiProvider } from "jotai";
 <JotaiProvider>
   <GameClient roomId={roomId} />
 </JotaiProvider>;
-```
+````
 
 This lets you keep Jotai optional and localized.
 
@@ -444,6 +450,37 @@ This lets you keep Jotai optional and localized.
 - Rate limit sensitive server actions with simple token bucket or time checks
 - Sanitize user-generated content, limit payload sizes in broadcast
 
+### Content Security Policy (CSP)
+
+- Implement strict CSP with `script-src 'self'` plus explicit Vercel domains
+- Set `connect-src` to include Supabase and approved APIs only
+- Use `frame-ancestors 'none'` to prevent clickjacking (equivalent to `X-Frame-Options: DENY`)
+- Example CSP header:
+
+  ```http
+  Content-Security-Policy: script-src 'self' 'unsafe-inline' https://vercel.live; connect-src 'self' https://*.supabase.co https://*.vercel.app; frame-ancestors 'none'; object-src 'none'; base-uri 'self'
+  ```
+
+### CSRF Protection
+
+- Require CSRF protection on all non-GET mutating endpoints
+- Implement double-submit cookie pattern or verify Origin/Referer headers
+- Reject requests with mismatched Origin/Referer headers
+- Use SameSite cookie attributes for additional protection
+
+### PostMessage Security
+
+- Validate all postMessage events by checking `event.origin` against an allowlist
+- Only process messages from trusted origins (e.g., same domain, approved parent domains)
+- Never trust message content without origin validation
+
+### Payload and Rate Limiting
+
+- Enforce server-side broadcast payload size limits (e.g., 1KB max per message)
+- Implement token-bucket rate limiting for broadcast channels per user
+- Add time-based rate limits (e.g., max 10 messages per second per user)
+- Apply stricter limits for sensitive operations (e.g., room creation, user management)
+
 ### RLS Testing
 
 - Write small SQL probes in migration PR to verify policies
@@ -495,8 +532,20 @@ This lets you keep Jotai optional and localized.
 
 ### CI
 
-- Run `pnpm drizzle:migrate` on merge to main via GitHub Actions
-- Optional: run `pnpm db:seed` on non-prod
+- **Migration Safety:** Never auto-run `pnpm drizzle:migrate` on production
+- **Environment Guards:** Only run migrations when `ENV != production` or `PROCEED_MIGRATION=true`
+- **Manual Approval:** Use GitHub Actions environment protection or `workflow_dispatch` with required reviewers for production migrations
+- **Secrets Scope:** Limit DB credentials to non-production environments only
+- **Seeding:** Keep `pnpm db:seed` strictly optional and scoped to non-prod runs only
+- **Example workflow pattern:**
+
+  ```yaml
+  - name: Run Migrations
+    if: env.ENV != 'production' || env.PROCEED_MIGRATION == 'true'
+    run: pnpm drizzle:migrate
+    env:
+      DRIZZLE_DATABASE_URL: ${{ secrets.NON_PROD_DB_URL }}
+  ```
 
 ### Supabase
 

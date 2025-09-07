@@ -13,6 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Github, Mail } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -24,6 +25,9 @@ const emailSchema = z.object({
 type EmailFormData = z.infer<typeof emailSchema>;
 
 export default function LoginPage() {
+  const searchParams = useSearchParams();
+  const next = searchParams.get("next") ?? "/dashboard";
+
   const [isLoading, setIsLoading] = useState(false);
   const [isGitHubLoading, setIsGitHubLoading] = useState(false);
 
@@ -39,8 +43,19 @@ export default function LoginPage() {
     try {
       const formData = new FormData();
       formData.append("email", data.email);
+      formData.append("next", next);
       await login(formData);
     } catch (error) {
+      // Re-throw redirects so they can execute
+      if (
+        error &&
+        typeof error === "object" &&
+        "digest" in error &&
+        typeof error.digest === "string" &&
+        error.digest.includes("NEXT_REDIRECT")
+      ) {
+        throw error;
+      }
       console.error("Login error:", error);
     } finally {
       setIsLoading(false);
@@ -53,6 +68,16 @@ export default function LoginPage() {
       const formData = new FormData();
       await loginWithGitHub(formData);
     } catch (error) {
+      // Re-throw redirects so they can execute
+      if (
+        error &&
+        typeof error === "object" &&
+        "digest" in error &&
+        typeof error.digest === "string" &&
+        error.digest.includes("NEXT_REDIRECT")
+      ) {
+        throw error;
+      }
       console.error("GitHub login error:", error);
     } finally {
       setIsGitHubLoading(false);

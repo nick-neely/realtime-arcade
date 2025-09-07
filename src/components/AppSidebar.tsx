@@ -29,7 +29,7 @@ const navigationItems = [
   },
   {
     title: "Browse Rooms",
-    url: "/play",
+    url: "/dashboard/play",
     icon: Users,
   },
 ];

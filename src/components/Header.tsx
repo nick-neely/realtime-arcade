@@ -6,13 +6,13 @@ import type { User as SupabaseUser } from "@supabase/supabase-js";
 import { Gamepad2, LogOut, User } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 export function Header() {
   const [user, setUser] = useState<SupabaseUser | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
-  const supabase = createSupabaseClient();
+  const supabase = useMemo(() => createSupabaseClient(), []);
 
   useEffect(() => {
     const getUser = async () => {
@@ -33,7 +33,7 @@ export function Header() {
     });
 
     return () => subscription.unsubscribe();
-  }, [supabase.auth]);
+  }, [supabase]);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -49,28 +49,28 @@ export function Header() {
             <span className="font-bold text-2xl">Realtime Arcade</span>
           </Link>
           <div className="flex items-center space-x-4">
-            <Link href="/play">
-              <Button
-                variant="ghost"
-                className="rounded-none border-2 border-transparent hover:border-foreground"
-              >
-                Browse Games
-              </Button>
-            </Link>
+            <Button
+              asChild
+              variant="ghost"
+              className="rounded-none border-2 border-transparent hover:border-foreground"
+            >
+              <Link href="/play">Browse Games</Link>
+            </Button>
 
             {loading ? (
               <div className="w-20 h-10 bg-muted animate-pulse rounded-none" />
             ) : user ? (
               <>
-                <Link href="/dashboard">
-                  <Button
-                    variant="ghost"
-                    className="rounded-none border-2 border-transparent hover:border-foreground"
-                  >
+                <Button
+                  asChild
+                  variant="ghost"
+                  className="rounded-none border-2 border-transparent hover:border-foreground"
+                >
+                  <Link href="/dashboard">
                     <User className="h-4 w-4 mr-2" />
                     Dashboard
-                  </Button>
-                </Link>
+                  </Link>
+                </Button>
                 <Button
                   variant="ghost"
                   onClick={handleSignOut}
@@ -82,19 +82,16 @@ export function Header() {
               </>
             ) : (
               <>
-                <Link href="/login">
-                  <Button
-                    variant="ghost"
-                    className="rounded-none border-2 border-transparent hover:border-foreground"
-                  >
-                    Sign In
-                  </Button>
-                </Link>
-                <Link href="/login">
-                  <Button className="rounded-none shadow-lg">
-                    Get Started
-                  </Button>
-                </Link>
+                <Button
+                  asChild
+                  variant="ghost"
+                  className="rounded-none border-2 border-transparent hover:border-foreground"
+                >
+                  <Link href="/login">Sign In</Link>
+                </Button>
+                <Button asChild className="rounded-none shadow-lg">
+                  <Link href="/login">Get Started</Link>
+                </Button>
               </>
             )}
           </div>

@@ -16,16 +16,10 @@ export async function GET(request: Request) {
     const supabase = await createSupabaseServer()
     const { error } = await supabase.auth.exchangeCodeForSession(code)
     if (!error) {
-      const forwardedHost = request.headers.get('x-forwarded-host') // original origin before load balancer
       const isLocalEnv = process.env.NODE_ENV === 'development'
-      if (isLocalEnv) {
-        // we can be sure that there is no load balancer in between, so no need to watch for X-Forwarded-Host
-        return NextResponse.redirect(`${origin}${next}`)
-      } else if (forwardedHost) {
-        return NextResponse.redirect(`https://${forwardedHost}${next}`)
-      } else {
-        return NextResponse.redirect(`${origin}${next}`)
-      }
+      const siteUrl = process.env.NEXT_PUBLIC_SITE_URL
+      const redirectOrigin = isLocalEnv ? origin : (siteUrl ?? origin)
+      return NextResponse.redirect(`${redirectOrigin}${next}`)
     }
   }
   // return the user to an error page with instructions

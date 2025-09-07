@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import starsAnimationData from "../../public/animations/stars-rating.json";
 import { LottieAnimation } from "./LottieAnimation";
 
 interface StarsRatingProps {
@@ -9,39 +10,24 @@ interface StarsRatingProps {
 }
 
 export function StarsRating({ className = "", delay = 0 }: StarsRatingProps) {
-  const [animationData, setAnimationData] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    // Load the animation data
-    const loadAnimation = async () => {
-      try {
-        const response = await fetch("/animations/stars-rating.json");
-        const data = await response.json();
-        setAnimationData(data);
-
-        // Add delay if specified
-        if (delay > 0) {
-          setTimeout(() => setIsLoaded(true), delay);
-        } else {
-          setIsLoaded(true);
-        }
-      } catch (error) {
-        console.error("Failed to load stars animation:", error);
-        // Fallback to static star if animation fails to load
-        setIsLoaded(true);
-      }
-    };
-
-    loadAnimation();
+    // Add delay if specified
+    if (delay > 0) {
+      const id = window.setTimeout(() => setIsLoaded(true), delay);
+      return () => window.clearTimeout(id);
+    } else {
+      setIsLoaded(true);
+    }
   }, [delay]);
 
   return (
     <div className={`flex items-center ${className}`}>
       <div className="h-4 w-16 flex items-center justify-center">
-        {isLoaded && animationData ? (
+        {isLoaded ? (
           <LottieAnimation
-            animationData={animationData}
+            animationData={starsAnimationData}
             autoplay={true}
             loop={false}
             speed={1}

@@ -18,26 +18,26 @@ export async function ServerHeader() {
             <span className="font-bold text-2xl">Realtime Arcade</span>
           </Link>
           <div className="flex items-center space-x-4">
-            <Link href="/play">
-              <Button
-                variant="ghost"
-                className="rounded-none border-2 border-transparent hover:border-foreground"
-              >
-                Browse Games
-              </Button>
-            </Link>
+            <Button
+              asChild
+              variant="ghost"
+              className="rounded-none border-2 border-transparent hover:border-foreground"
+            >
+              <Link href="/play">Browse Games</Link>
+            </Button>
 
             {user ? (
               <>
-                <Link href="/dashboard">
-                  <Button
-                    variant="ghost"
-                    className="rounded-none border-2 border-transparent hover:border-foreground"
-                  >
+                <Button
+                  asChild
+                  variant="ghost"
+                  className="rounded-none border-2 border-transparent hover:border-foreground"
+                >
+                  <Link href="/dashboard">
                     <User className="h-4 w-4 mr-2" />
                     Dashboard
-                  </Button>
-                </Link>
+                  </Link>
+                </Button>
                 <form action="/auth/signout" method="post">
                   <Button
                     variant="ghost"
@@ -51,19 +51,16 @@ export async function ServerHeader() {
               </>
             ) : (
               <>
-                <Link href="/login">
-                  <Button
-                    variant="ghost"
-                    className="rounded-none border-2 border-transparent hover:border-foreground"
-                  >
-                    Sign In
-                  </Button>
-                </Link>
-                <Link href="/login">
-                  <Button className="rounded-none shadow-lg">
-                    Get Started
-                  </Button>
-                </Link>
+                <Button
+                  asChild
+                  variant="ghost"
+                  className="rounded-none border-2 border-transparent hover:border-foreground"
+                >
+                  <Link href="/login">Sign In</Link>
+                </Button>
+                <Button asChild className="rounded-none shadow-lg">
+                  <Link href="/login">Get Started</Link>
+                </Button>
               </>
             )}
           </div>
