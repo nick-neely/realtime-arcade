@@ -85,7 +85,7 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="mx-auto max-w-sm pt-24">
+    <main className="mx-auto max-w-sm pt-8 md:pt-24 pb-8 flex-1 flex flex-col justify-center px-4">
       <div className="space-y-6">
         <div className="text-center">
           <h1 className="text-2xl font-bold">Welcome back</h1>

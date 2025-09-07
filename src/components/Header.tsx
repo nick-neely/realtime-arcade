@@ -1,9 +1,16 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { createSupabaseClient } from "@/lib/supabase/client";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
-import { Gamepad2, LogOut, User } from "lucide-react";
+import { Gamepad2, LogOut, Menu, User } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
@@ -40,6 +47,56 @@ export function Header() {
     router.push("/");
   };
 
+  const NavigationLinks = () => (
+    <>
+      <Button
+        asChild
+        variant="ghost"
+        className="rounded-none border-2 border-transparent hover:border-foreground"
+      >
+        <Link href="/play">Browse Games</Link>
+      </Button>
+
+      {loading ? (
+        <div className="w-20 h-10 bg-muted animate-pulse rounded-none" />
+      ) : user ? (
+        <>
+          <Button
+            asChild
+            variant="ghost"
+            className="rounded-none border-2 border-transparent hover:border-foreground"
+          >
+            <Link href="/dashboard">
+              <User className="h-4 w-4 mr-2" />
+              Dashboard
+            </Link>
+          </Button>
+          <Button
+            variant="ghost"
+            onClick={handleSignOut}
+            className="rounded-none border-2 border-transparent hover:border-foreground"
+          >
+            <LogOut className="h-4 w-4 mr-2" />
+            Sign Out
+          </Button>
+        </>
+      ) : (
+        <>
+          <Button
+            asChild
+            variant="ghost"
+            className="rounded-none border-2 border-transparent hover:border-foreground"
+          >
+            <Link href="/login">Sign In</Link>
+          </Button>
+          <Button asChild className="rounded-none shadow-lg">
+            <Link href="/login">Get Started</Link>
+          </Button>
+        </>
+      )}
+    </>
+  );
+
   return (
     <header className="border-b-2 border-foreground bg-background">
       <div className="container mx-auto px-4 py-6">
@@ -48,52 +105,34 @@ export function Header() {
             <Gamepad2 className="h-8 w-8" />
             <span className="font-bold text-2xl">Realtime Arcade</span>
           </Link>
-          <div className="flex items-center space-x-4">
-            <Button
-              asChild
-              variant="ghost"
-              className="rounded-none border-2 border-transparent hover:border-foreground"
-            >
-              <Link href="/play">Browse Games</Link>
-            </Button>
 
-            {loading ? (
-              <div className="w-20 h-10 bg-muted animate-pulse rounded-none" />
-            ) : user ? (
-              <>
-                <Button
-                  asChild
-                  variant="ghost"
-                  className="rounded-none border-2 border-transparent hover:border-foreground"
-                >
-                  <Link href="/dashboard">
-                    <User className="h-4 w-4 mr-2" />
-                    Dashboard
-                  </Link>
-                </Button>
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-4">
+            <NavigationLinks />
+          </div>
+
+          {/* Mobile Navigation */}
+          <div className="md:hidden">
+            <Sheet>
+              <SheetTrigger asChild>
                 <Button
                   variant="ghost"
-                  onClick={handleSignOut}
+                  size="icon"
                   className="rounded-none border-2 border-transparent hover:border-foreground"
                 >
-                  <LogOut className="h-4 w-4 mr-2" />
-                  Sign Out
+                  <Menu className="h-5 w-5" />
+                  <span className="sr-only">Open menu</span>
                 </Button>
-              </>
-            ) : (
-              <>
-                <Button
-                  asChild
-                  variant="ghost"
-                  className="rounded-none border-2 border-transparent hover:border-foreground"
-                >
-                  <Link href="/login">Sign In</Link>
-                </Button>
-                <Button asChild className="rounded-none shadow-lg">
-                  <Link href="/login">Get Started</Link>
-                </Button>
-              </>
-            )}
+              </SheetTrigger>
+              <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+                <SheetHeader>
+                  <SheetTitle className="text-left">Menu</SheetTitle>
+                </SheetHeader>
+                <div className="flex flex-col space-y-4 mt-6">
+                  <NavigationLinks />
+                </div>
+              </SheetContent>
+            </Sheet>
           </div>
         </nav>
       </div>
