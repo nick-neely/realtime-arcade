@@ -1,3 +1,4 @@
+import { getServerSideURL } from '@/lib/getURL'
 import { createSupabaseServer } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
 
@@ -16,12 +17,11 @@ export async function GET(request: Request) {
     const supabase = await createSupabaseServer()
     const { error } = await supabase.auth.exchangeCodeForSession(code)
     if (!error) {
-      const isLocalEnv = process.env.NODE_ENV === 'development'
-      const siteUrl = process.env.NEXT_PUBLIC_SITE_URL
-      const redirectOrigin = isLocalEnv ? origin : (siteUrl ?? origin)
-      return NextResponse.redirect(`${redirectOrigin}${next}`)
+      const siteUrl = getServerSideURL()
+      return NextResponse.redirect(`${siteUrl}${next}`)
     }
   }
   // return the user to an error page with instructions
-  return NextResponse.redirect(`${origin}/auth/auth-code-error`)
+  const siteUrl = getServerSideURL()
+  return NextResponse.redirect(`${siteUrl}/auth/auth-code-error`)
 }

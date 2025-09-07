@@ -1,5 +1,6 @@
 "use server";
 
+import { getServerSideURL } from "@/lib/getURL";
 import { createSupabaseServer } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 
@@ -18,7 +19,7 @@ export async function login(formData: FormData) {
     redirect("/login?error=missing_email");
   }
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL!;
+  const siteUrl = getServerSideURL();
   const emailRedirectTo = `${siteUrl}/auth/confirm?next=${encodeURIComponent(next)}`;
 
   const { error } = await supabase.auth.signInWithOtp({
@@ -45,9 +46,8 @@ export async function loginWithGitHub(formData: FormData) {
 
   const rawNext = String(formData.get("next") ?? "/dashboard");
   const next = rawNext.startsWith("/") ? rawNext : "/dashboard";
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
-  if (!siteUrl) redirect("/login?error=misconfigured_site_url");
-  const redirectTo = `${siteUrl.replace(/\/+$/, "")}/auth/callback?next=${encodeURIComponent(next)}`;
+  const siteUrl = getServerSideURL();
+  const redirectTo = `${siteUrl}/auth/callback?next=${encodeURIComponent(next)}`;
 
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'github',
