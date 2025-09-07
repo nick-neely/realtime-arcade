@@ -13,6 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Github, Mail } from "lucide-react";
+import { motion } from "motion/react";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -85,33 +86,58 @@ export default function LoginPage() {
   };
 
   return (
-    <section className="mx-auto max-w-sm pt-8 md:pt-24 pb-8 flex-1 flex flex-col justify-center px-4">
-      <div className="space-y-6">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold">Welcome back</h1>
-          <p className="text-muted-foreground">Sign in to your account</p>
-        </div>
+    <section className="mx-auto w-full max-w-2xl md:max-w-3xl lg:max-w-4xl xl:max-w-5xl pt-8 md:pt-16 lg:pt-24 pb-8 flex-1 flex flex-col justify-center px-4 md:px-6">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: "easeOut" }}
+        className="space-y-8"
+      >
+        {/* Header Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.1, ease: "easeOut" }}
+          className="text-center space-y-3"
+        >
+          <h1 className="text-3xl md:text-4xl font-bold">Welcome back</h1>
+          <p className="text-muted-foreground text-lg">
+            Sign in to your account
+          </p>
+        </motion.div>
 
-        <div className="space-y-4">
+        {/* Login Form Card */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.2, ease: "easeOut" }}
+          className="bg-card border-2 border-black shadow-lg p-6 md:p-8 lg:p-12 space-y-6 w-full max-w-md md:max-w-lg lg:max-w-xl mx-auto"
+        >
           {/* GitHub OAuth Login */}
-          <Button
-            type="button"
-            variant="outline"
-            className="w-full"
-            onClick={handleGitHubLogin}
-            disabled={isGitHubLoading}
+          <motion.div
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
           >
-            <Github className="w-4 h-4 mr-2" />
-            {isGitHubLoading ? "Signing in..." : "Continue with GitHub"}
-          </Button>
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full h-12 text-base border-2 border-black "
+              onClick={handleGitHubLogin}
+              disabled={isGitHubLoading}
+            >
+              <Github className="w-5 h-5 mr-3" />
+              {isGitHubLoading ? "Signing in..." : "Continue with GitHub"}
+            </Button>
+          </motion.div>
 
           {/* Divider */}
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t" />
+              <span className="w-full border-t-2 border-black" />
             </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-2 text-muted-foreground">
+            <div className="relative flex justify-center text-sm uppercase">
+              <span className="bg-card px-4 text-muted-foreground font-medium">
                 Or continue with email
               </span>
             </div>
@@ -119,17 +145,20 @@ export default function LoginPage() {
 
           {/* Magic Link Login Form */}
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <FormField
                 control={form.control}
                 name="email"
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
+                  <FormItem className="space-y-3">
+                    <FormLabel className="text-base font-semibold">
+                      Email
+                    </FormLabel>
                     <FormControl>
                       <Input
                         placeholder="you@example.com"
                         type="email"
+                        className="h-12 text-base border-2 border-black"
                         {...field}
                         disabled={isLoading}
                       />
@@ -138,14 +167,24 @@ export default function LoginPage() {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full" disabled={isLoading}>
-                <Mail className="w-4 h-4 mr-2" />
-                {isLoading ? "Sending..." : "Send magic link"}
-              </Button>
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
+              >
+                <Button
+                  type="submit"
+                  className="w-full h-12 text-base border-2 border-black shadow-lg font-semibold"
+                  disabled={isLoading}
+                >
+                  <Mail className="w-5 h-5 mr-3" />
+                  {isLoading ? "Sending..." : "Send magic link"}
+                </Button>
+              </motion.div>
             </form>
           </Form>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </section>
   );
 }
