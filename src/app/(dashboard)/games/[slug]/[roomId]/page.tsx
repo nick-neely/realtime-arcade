@@ -1,6 +1,6 @@
-import { notFound } from 'next/navigation'
 import { requireUser } from '@/lib/auth/requireUser'
 import { GAME_REGISTRY } from '@/lib/games/registry'
+import { notFound } from 'next/navigation'
 
 export const runtime = 'nodejs'
 
@@ -36,7 +36,7 @@ export default async function GameRoom({
   if (!membership) {
     const { error: joinError } = await supabase
       .from('room_players')
-      .insert({ room_id: roomId, user_id: user.id })
+      .upsert({ room_id: roomId, user_id: user.id }, { onConflict: 'room_id,user_id' })
     console.log('[GameRoom] join attempt', { joinError })
   }
 

@@ -25,12 +25,13 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     env:
-      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
-      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
-      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-      DRIZZLE_DATABASE_URL: ${{ secrets.DRIZZLE_DATABASE_URL }}
-      SUPABASE_DB_POOL_URL: ${{ secrets.SUPABASE_DB_POOL_URL }}
-      NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL }}
+      NEXT_TELEMETRY_DISABLED: '1'
+      NODE_ENV: test
+      NEXT_PUBLIC_SUPABASE_URL: 'https://example.supabase.co'
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: 'anon-key'
+      NEXT_PUBLIC_SITE_URL: 'http://localhost:3000'
+      DRIZZLE_DATABASE_URL: 'postgres://user:pass@127.0.0.1:5432/db'
+      SUPABASE_DB_POOL_URL: 'postgres://user:pass@127.0.0.1:5432/db'
     steps:
       - uses: actions/checkout@v4
       - name: Setup pnpm

@@ -27,8 +27,8 @@ type EmailFormData = z.infer<typeof emailSchema>
 
 export function LoginForm() {
   const searchParams = useSearchParams()
-  const next = searchParams.get('next') ?? '/dashboard'
-
+  const rawNext = searchParams.get('next') ?? '/dashboard'
+  const next = rawNext.startsWith('/') ? rawNext : '/dashboard'
   const [isLoading, setIsLoading] = useState(false)
   const [isGitHubLoading, setIsGitHubLoading] = useState(false)
 

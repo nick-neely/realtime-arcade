@@ -304,11 +304,19 @@ Games are discovered at runtime using a registry. Each game provides a descripto
 
 ```ts
 // src/lib/games/registry.ts
+import type { ComponentType } from 'react'
+
 export type GameDescriptor = {
   slug: string
   name: string
-  channelEvents: { action: string[] }
-  load: () => Promise<{ default: React.ComponentType<{ roomId: string }> }>
+  // Room-level realtime configuration
+  channelEvents: {
+    action: string[] // whitelisted broadcast event names
+  }
+  // Optional client reducer to simulate while waiting for DB confirm
+  reducer?: <T>(state: T, event: { type: string; payload: Record<string, unknown> }) => T
+  // Dynamic import to the game UI
+  load: () => Promise<{ default: ComponentType<{ roomId: string }> }>
 }
 
 export const GAME_REGISTRY: Record<string, GameDescriptor> = {

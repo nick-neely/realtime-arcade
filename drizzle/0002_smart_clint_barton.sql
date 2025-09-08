@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX "ux_room_players_room_user" ON "room_players" USING btree ("room_id","user_id");

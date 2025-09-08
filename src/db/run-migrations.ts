@@ -4,6 +4,11 @@ import { migrate } from 'drizzle-orm/postgres-js/migrator'
 import postgres from 'postgres'
 
 async function main() {
+  if (process.env.NODE_ENV === 'production' && process.env.PROCEED_MIGRATION !== 'true') {
+    console.warn('Skipping migrations: NODE_ENV=production and PROCEED_MIGRATION!=true')
+    process.exit(0)
+  }
+
   const sql = postgres(process.env.DRIZZLE_DATABASE_URL!, {
     ssl: 'require',
     max: 1,

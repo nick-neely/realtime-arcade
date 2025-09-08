@@ -15,6 +15,13 @@
       "when": 1755638900000,
       "tag": "0001_add_rls",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1757355544929,
+      "tag": "0002_smart_clint_barton",
+      "breakpoints": true
     }
   ]
 }
