@@ -1,9 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // experimental: {
-  //   nodeMiddleware: true,
-  // },
+  // Turbopack handles Supabase dependencies automatically
 };
 
 export default nextConfig;
