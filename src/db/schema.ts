@@ -48,16 +48,20 @@ export const rooms = pgTable('rooms', {
   endedAt: timestamp('ended_at', { withTimezone: true }),
 })
 
-export const roomPlayers = pgTable('room_players', {
-  id: bigserial('id', { mode: 'number' }).primaryKey(),
-  roomId: uuid('room_id').notNull(),
-  userId: uuid('user_id').notNull(),
-  role: roomRole('role').notNull().default('player'),
-  joinedAt: timestamp('joined_at', { withTimezone: true }).notNull().defaultNow(),
-  lastActive: timestamp('last_active', { withTimezone: true }).notNull().defaultNow(),
-}, (t) => ({
-  unique: uniqueIndex('ux_room_players_room_user').on(t.roomId, t.userId),
-}))
+export const roomPlayers = pgTable(
+  'room_players',
+  {
+    id: bigserial('id', { mode: 'number' }).primaryKey(),
+    roomId: uuid('room_id').notNull(),
+    userId: uuid('user_id').notNull(),
+    role: roomRole('role').notNull().default('player'),
+    joinedAt: timestamp('joined_at', { withTimezone: true }).notNull().defaultNow(),
+    lastActive: timestamp('last_active', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => ({
+    unique: uniqueIndex('ux_room_players_room_user').on(t.roomId, t.userId),
+  }),
+)
 
 export const roomEvents = pgTable('room_events', {
   id: bigserial('id', { mode: 'number' }).primaryKey(),
