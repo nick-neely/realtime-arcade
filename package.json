@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
-    "start": "next start",
+    "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev --turbopack",
+    "build": "cross-env NODE_OPTIONS='--no-deprecation --max-old-space-size=4096' next build --turbopack",
+    "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
     "lint": "next lint",
     "clean": "rm -rf .next node_modules && pnpm store prune",
     "format": "prettier --write .",
@@ -13,8 +13,8 @@
     "tsc": "cross-env NODE_OPTIONS=--max-old-space-size=4096 tsc --noEmit",
     "checks": "pnpm lint && pnpm format:check && pnpm tsc",
     "drizzle:generate": "drizzle-kit generate",
-    "drizzle:migrate": "tsx ./src/db/run-migrations.ts",
-    "db:seed": "tsx ./src/db/seed.ts",
+    "drizzle:migrate": "cross-env NODE_OPTIONS=--no-deprecation tsx ./src/db/run-migrations.ts",
+    "db:seed": "cross-env NODE_OPTIONS=--no-deprecation tsx ./src/db/seed.ts",
     "supabase:types": "pnpm dlx supabase gen types typescript --project-id \"lzttmjzishxldndouoct\" > src/lib/supabase/database.types.ts"
   },
   "dependencies": {
