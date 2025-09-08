@@ -13,7 +13,7 @@ export default function Home() {
   return (
     <div className="bg-background">
       {/* Hero Section */}
-      <section className="container mx-auto px-4 py-16 md:py-20">
+      <section className="container mx-auto px-4 py-12 md:py-16">
         <div className="mx-auto max-w-5xl space-y-10 text-center">
           {/* Social Proof */}
           <motion.div
