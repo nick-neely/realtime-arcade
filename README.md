@@ -192,12 +192,10 @@ Notes
    ```
 
 3. **Create a Supabase project**
-
    - Enable Email auth (magic link or password) and any socials you want.
    - Add your development URL to the Auth redirect allowlist, for example `http://localhost:3000`.
 
 4. **Configure Realtime**
-
    - You will enable WAL streaming and publication in a migration below, not by hand.
 
 5. **Copy and fill `.env.local`**
@@ -219,7 +217,6 @@ Notes
 
 3. **Add policies, foreign keys, indices, publications**
    Add a manual SQL file similar to `drizzle/0002_rls_pubs.sql` that
-
    - Adds FKs to `auth.users` and other tables
    - Enables Row Level Security on all tables
    - Creates policies for read and write
@@ -307,21 +304,29 @@ Games are discovered at runtime using a registry. Each game provides a descripto
 
 ```ts
 // src/lib/games/registry.ts
+import type { ComponentType } from 'react'
+
 export type GameDescriptor = {
-  slug: string;
-  name: string;
-  channelEvents: { action: string[] };
-  load: () => Promise<{ default: React.ComponentType<{ roomId: string }> }>;
-};
+  slug: string
+  name: string
+  // Room-level realtime configuration
+  channelEvents: {
+    action: string[] // whitelisted broadcast event names
+  }
+  // Optional client reducer to simulate while waiting for DB confirm
+  reducer?: <T>(state: T, event: { type: string; payload: Record<string, unknown> }) => T
+  // Dynamic import to the game UI
+  load: () => Promise<{ default: ComponentType<{ roomId: string }> }>
+}
 
 export const GAME_REGISTRY: Record<string, GameDescriptor> = {
-  "copycat-ui": {
-    slug: "copycat-ui",
-    name: "Copycat UI",
-    channelEvents: { action: ["place_block", "update_block", "delete_block"] },
-    load: () => import("@/games/copycat-ui"),
+  'copycat-ui': {
+    slug: 'copycat-ui',
+    name: 'Copycat UI',
+    channelEvents: { action: ['place_block', 'update_block', 'delete_block'] },
+    load: () => import('@/games/copycat-ui'),
   },
-};
+}
 ```
 
 **Add a new game**

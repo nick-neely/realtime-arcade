@@ -1,0 +1,45 @@
+.tmp
+**/.git
+**/.hg
+**/.pnp.*
+**/.svn
+**/.yarn/**
+**/build
+**/dist/**
+**/node_modules
+**/temp
+**/docs/**
+tsconfig.json
+pnpm-lock.yaml
+
+# Build and deployment outputs
+**/.next/**
+**/coverage/**
+**/.vercel/**
+
+# Generated sources
+emails/.react-email/**
+
+# Database migrations and generated files
+drizzle/**
+*.sql
+
+# TypeScript build info
+tsconfig.tsbuildinfo
+
+# Supabase generated types
+src/lib/supabase/database.types.ts
+
+# Configuration files that shouldn't be formatted
+components.json
+drizzle.config.ts
+postcss.config.mjs
+eslint.config.mjs
+next.config.ts
+next-env.d.ts
+
+# Supabase config
+supabase/config.toml
+
+# Lottie animation files
+public/animations/*.json

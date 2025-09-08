@@ -1,27 +1,21 @@
-import { Button } from "@/components/ui/button";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import { createSupabaseServer } from "@/lib/supabase/server";
-import { Gamepad2, LogOut, Menu, User } from "lucide-react";
-import Link from "next/link";
+import { Button } from '@/components/ui/button'
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
+import { createSupabaseServer } from '@/lib/supabase/server'
+import { Gamepad2, LogOut, Menu, User } from 'lucide-react'
+import Link from 'next/link'
 
 export async function ServerHeader() {
-  const supabase = await createSupabaseServer();
+  const supabase = await createSupabaseServer()
   const {
     data: { user },
-  } = await supabase.auth.getUser();
+  } = await supabase.auth.getUser()
 
   const NavigationLinks = () => (
     <>
       <Button
         asChild
         variant="ghost"
-        className="rounded-none border-2 border-transparent hover:border-foreground"
+        className="hover:border-foreground rounded-none border-2 border-transparent"
       >
         <Link href="/play">Browse Games</Link>
       </Button>
@@ -31,10 +25,10 @@ export async function ServerHeader() {
           <Button
             asChild
             variant="ghost"
-            className="rounded-none border-2 border-transparent hover:border-foreground"
+            className="hover:border-foreground rounded-none border-2 border-transparent"
           >
             <Link href="/dashboard">
-              <User className="h-4 w-4 mr-2" />
+              <User className="mr-2 h-4 w-4" />
               Dashboard
             </Link>
           </Button>
@@ -42,9 +36,9 @@ export async function ServerHeader() {
             <Button
               variant="ghost"
               type="submit"
-              className="rounded-none border-2 border-transparent hover:border-foreground"
+              className="hover:border-foreground rounded-none border-2 border-transparent"
             >
-              <LogOut className="h-4 w-4 mr-2" />
+              <LogOut className="mr-2 h-4 w-4" />
               Sign Out
             </Button>
           </form>
@@ -54,7 +48,7 @@ export async function ServerHeader() {
           <Button
             asChild
             variant="ghost"
-            className="rounded-none border-2 border-transparent hover:border-foreground"
+            className="hover:border-foreground rounded-none border-2 border-transparent"
           >
             <Link href="/login">Sign In</Link>
           </Button>
@@ -64,19 +58,19 @@ export async function ServerHeader() {
         </>
       )}
     </>
-  );
+  )
 
   return (
-    <header className="border-b-2 border-foreground bg-background">
+    <header className="border-foreground bg-background border-b-2">
       <div className="container mx-auto px-4 py-6">
         <nav className="flex items-center justify-between">
           <Link href="/" className="flex items-center space-x-2">
             <Gamepad2 className="h-8 w-8" />
-            <span className="font-bold text-2xl">Realtime Arcade</span>
+            <span className="text-2xl font-bold">Realtime Arcade</span>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="hidden items-center space-x-4 md:flex">
             <NavigationLinks />
           </div>
 
@@ -87,7 +81,7 @@ export async function ServerHeader() {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="rounded-none border-2 border-transparent hover:border-foreground"
+                  className="hover:border-foreground rounded-none border-2 border-transparent"
                 >
                   <Menu className="h-5 w-5" />
                   <span className="sr-only">Open menu</span>
@@ -97,7 +91,7 @@ export async function ServerHeader() {
                 <SheetHeader>
                   <SheetTitle className="text-left">Menu</SheetTitle>
                 </SheetHeader>
-                <div className="flex flex-col space-y-4 mt-6">
+                <div className="mt-6 flex flex-col space-y-4">
                   <NavigationLinks />
                 </div>
               </SheetContent>
@@ -106,5 +100,5 @@ export async function ServerHeader() {
         </nav>
       </div>
     </header>
-  );
+  )
 }

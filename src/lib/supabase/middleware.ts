@@ -20,11 +20,11 @@ export async function updateSession(request: NextRequest) {
             request,
           })
           cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
+            supabaseResponse.cookies.set(name, value, options),
           )
         },
       },
-    }
+    },
   )
 
   // Do not run code between createServerClient and
@@ -42,13 +42,13 @@ export async function updateSession(request: NextRequest) {
     const url = request.nextUrl.clone()
     url.pathname = '/dashboard'
     const redirectResponse = NextResponse.redirect(url)
-    
+
     // Copy all Set-Cookie headers from supabaseResponse to preserve auth cookies
     const setCookieHeaders = supabaseResponse.headers.getSetCookie()
-    setCookieHeaders.forEach(cookie => {
+    setCookieHeaders.forEach((cookie) => {
       redirectResponse.headers.append('Set-Cookie', cookie)
     })
-    
+
     return redirectResponse
   }
 
@@ -64,13 +64,13 @@ export async function updateSession(request: NextRequest) {
     const url = request.nextUrl.clone()
     url.pathname = '/login'
     const redirectResponse = NextResponse.redirect(url)
-    
+
     // Copy all Set-Cookie headers from supabaseResponse to preserve auth cookies
     const setCookieHeaders = supabaseResponse.headers.getSetCookie()
-    setCookieHeaders.forEach(cookie => {
+    setCookieHeaders.forEach((cookie) => {
       redirectResponse.headers.append('Set-Cookie', cookie)
     })
-    
+
     return redirectResponse
   }
 

@@ -1,0 +1,50 @@
+name: Build Verification
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    paths:
+      - '**/*.ts'
+      - '**/*.tsx'
+      - '**/*.js'
+      - '**/*.jsx'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'next.config.*'
+      - 'tsconfig.json'
+      - 'public/**'
+      - 'app/**'
+      - 'components/**'
+      - 'lib/**'
+      - 'utils/**'
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+      NODE_ENV: test
+      NEXT_PUBLIC_SUPABASE_URL: 'https://example.supabase.co'
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: 'anon-key'
+      NEXT_PUBLIC_SITE_URL: 'http://localhost:3000'
+      DRIZZLE_DATABASE_URL: 'postgres://user:pass@127.0.0.1:5432/db'
+      SUPABASE_DB_POOL_URL: 'postgres://user:pass@127.0.0.1:5432/db'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 10
+          run_install: false
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Build project
+        run: pnpm build
