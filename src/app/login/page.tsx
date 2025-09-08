@@ -15,7 +15,7 @@ export default function LoginPage() {
       <div className="relative flex flex-col items-center gap-8 lg:flex-row lg:items-center lg:justify-center lg:gap-16">
         {/* Store Animation - Hidden on mobile, shown on desktop to the left */}
         <div className="hidden lg:absolute lg:top-1/2 lg:-left-32 lg:block lg:-translate-y-1/2">
-          <Store size="lg" delay={200} />
+          <Store size="xl" delay={200} />
         </div>
 
         {/* Login Form - Always centered */}
