@@ -1,9 +1,9 @@
+import { LoginFormSkeleton } from '@/components/LoginFormSkeleton'
 import dynamic from 'next/dynamic'
 import { Suspense } from 'react'
-import { LoginFormSkeleton } from './LoginFormSkeleton'
 
 const LoginForm = dynamic(() =>
-  import('./LoginForm').then((m) => ({
+  import('@/components/LoginForm').then((m) => ({
     default: m.LoginForm, // map named export
   })),
 )

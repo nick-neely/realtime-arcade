@@ -109,7 +109,7 @@ export function LoginForm() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.2, ease: 'easeOut' }}
-        className="bg-card mx-auto w-full max-w-md space-y-6 border-2 border-black p-6 shadow-lg md:max-w-lg md:p-8 lg:max-w-xl lg:p-12"
+        className="bg-card mx-auto mb-16 w-full max-w-md space-y-6 border-2 border-black p-6 shadow-lg md:max-w-lg md:p-8 lg:max-w-xl lg:p-12"
       >
         {/* GitHub OAuth Login */}
         <motion.div
