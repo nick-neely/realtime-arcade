@@ -1,6 +1,7 @@
 'use client'
 
 import { login, loginWithGitHub } from '@/app/login/actions'
+import { Store } from '@/components/Store'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -98,10 +99,20 @@ export function LoginForm() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.1, ease: 'easeOut' }}
-        className="space-y-3 text-center"
+        className="space-y-3 text-center lg:space-y-3"
       >
         <h1 className="text-3xl font-bold md:text-4xl">Welcome back</h1>
-        <p className="text-muted-foreground text-lg">Sign in to your account</p>
+        <p className="text-muted-foreground -mb-6 text-lg lg:mb-0">Sign in to your account</p>
+      </motion.div>
+
+      {/* Store Animation - Mobile only */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.2, ease: 'easeOut' }}
+        className="-my-4 flex justify-center lg:hidden"
+      >
+        <Store size="xl" delay={300} />
       </motion.div>
 
       {/* Login Form Card */}
