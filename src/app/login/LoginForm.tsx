@@ -67,6 +67,7 @@ export function LoginForm() {
     setIsGitHubLoading(true);
     try {
       const formData = new FormData();
+      formData.append("next", next);
       await loginWithGitHub(formData);
     } catch (error) {
       // Re-throw redirects so they can execute

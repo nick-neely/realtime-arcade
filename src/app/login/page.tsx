@@ -1,6 +1,12 @@
+import dynamic from "next/dynamic";
 import { Suspense } from "react";
-import { LoginForm } from "./LoginForm";
 import { LoginFormSkeleton } from "./LoginFormSkeleton";
+
+const LoginForm = dynamic(() =>
+  import("./LoginForm").then((m) => ({
+    default: m.LoginForm, // map named export
+  }))
+);
 
 export default function LoginPage() {
   return (
