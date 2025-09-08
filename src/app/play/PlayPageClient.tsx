@@ -274,8 +274,8 @@ export function PlayPageClient({ rooms }: PlayPageClientProps) {
             transition={{ duration: 0.4, delay: 1.6 }}
           >
             Join thousands of players who create custom rooms, invite friends,
-            and host epic gaming sessions. It's completely free and takes just
-            30 seconds to get started.
+            and host epic gaming sessions. It&apos;s completely free and takes
+            just 30 seconds to get started.
           </motion.p>
         </motion.div>
 

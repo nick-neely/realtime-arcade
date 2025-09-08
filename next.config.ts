@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // Turbopack handles Supabase dependencies automatically
 };
 
 export default nextConfig;

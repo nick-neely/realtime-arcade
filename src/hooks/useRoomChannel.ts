@@ -1,6 +1,6 @@
 "use client";
-import { useEffect, useMemo, useRef, useState } from "react";
 import { supabase } from "@/lib/supabase/client";
+import { useEffect, useRef, useState } from "react";
 
 type PresenceMeta = { name?: string; color?: string };
 
@@ -15,7 +15,7 @@ export function useRoomChannel(roomId: string) {
     });
 
     channel
-      .on("presence", { event: "sync" }, () => setMembers(channel.presenceState() as any))
+      .on("presence", { event: "sync" }, () => setMembers(channel.presenceState() as Record<string, PresenceMeta[]>))
       .on("system", { event: "error" }, () => setConnection("error"))
       .on("broadcast", { event: "action" }, ({ payload }) => {
         window.dispatchEvent(new CustomEvent("room:action", { detail: payload }));
@@ -31,7 +31,7 @@ export function useRoomChannel(roomId: string) {
     return () => { channel.unsubscribe(); channelRef.current = null; };
   }, [roomId]);
 
-  function sendAction(type: string, payload: any) {
+  function sendAction(type: string, payload: Record<string, unknown>) {
     channelRef.current?.send({ type: "broadcast", event: "action", payload: { type, payload, ts: Date.now() } });
   }
 
