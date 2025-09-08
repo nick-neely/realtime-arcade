@@ -1,6 +1,6 @@
-"use client";
-import { createClient } from "@supabase/supabase-js";
-import type { Database } from "./database.types";
+'use client'
+import { createClient } from '@supabase/supabase-js'
+import type { Database } from './database.types'
 
 export const supabase = createClient<Database>(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -11,8 +11,8 @@ export const supabase = createClient<Database>(
       autoRefreshToken: true,
       detectSessionInUrl: true,
     },
-  }
-);
+  },
+)
 
 export function createSupabaseClient() {
   return createClient<Database>(
@@ -24,6 +24,6 @@ export function createSupabaseClient() {
         autoRefreshToken: true,
         detectSessionInUrl: true,
       },
-    }
-  );
+    },
+  )
 }

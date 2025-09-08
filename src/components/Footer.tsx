@@ -1,49 +1,46 @@
-"use client";
+'use client'
 
-import { createSupabaseClient } from "@/lib/supabase/client";
-import type { User as SupabaseUser } from "@supabase/supabase-js";
-import { Gamepad2, Github, Mail, Twitter } from "lucide-react";
-import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { createSupabaseClient } from '@/lib/supabase/client'
+import type { User as SupabaseUser } from '@supabase/supabase-js'
+import { Gamepad2, Github, Mail, Twitter } from 'lucide-react'
+import Link from 'next/link'
+import { useEffect, useMemo, useState } from 'react'
 
 export function Footer() {
-  const [user, setUser] = useState<SupabaseUser | null>(null);
-  const supabase = useMemo(() => createSupabaseClient(), []);
+  const [user, setUser] = useState<SupabaseUser | null>(null)
+  const supabase = useMemo(() => createSupabaseClient(), [])
 
   useEffect(() => {
     const getUser = async () => {
       const {
         data: { user },
-      } = await supabase.auth.getUser();
-      setUser(user);
-    };
+      } = await supabase.auth.getUser()
+      setUser(user)
+    }
 
-    getUser();
+    getUser()
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
-      setUser(session?.user ?? null);
-    });
+      setUser(session?.user ?? null)
+    })
 
-    return () => subscription.unsubscribe();
-  }, [supabase]);
+    return () => subscription.unsubscribe()
+  }, [supabase])
   return (
-    <footer className="border-t-2 border-foreground bg-background">
+    <footer className="border-foreground bg-background border-t-2">
       <div className="container mx-auto px-4 py-4 md:py-12">
         {/* Mobile: Compact layout */}
         <div className="md:hidden">
           <div className="space-y-4">
             {/* Brand */}
             <div className="text-center">
-              <Link
-                href="/"
-                className="flex items-center justify-center space-x-2"
-              >
+              <Link href="/" className="flex items-center justify-center space-x-2">
                 <Gamepad2 className="h-5 w-5" />
-                <span className="font-bold text-lg">Realtime Arcade</span>
+                <span className="text-lg font-bold">Realtime Arcade</span>
               </Link>
-              <p className="text-xs text-muted-foreground mt-2">
+              <p className="text-muted-foreground mt-2 text-xs">
                 The ultimate multiplayer gaming platform
               </p>
             </div>
@@ -51,14 +48,12 @@ export function Footer() {
             {/* Links in 2 columns */}
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div className="space-y-2">
-                <h3 className="font-semibold text-xs uppercase tracking-wide">
-                  Games
-                </h3>
+                <h3 className="text-xs font-semibold tracking-wide uppercase">Games</h3>
                 <ul className="space-y-1">
                   <li>
                     <Link
                       href="/play"
-                      className="text-muted-foreground hover:text-foreground transition-colors text-xs"
+                      className="text-muted-foreground hover:text-foreground text-xs transition-colors"
                     >
                       Browse Games
                     </Link>
@@ -66,7 +61,7 @@ export function Footer() {
                   <li>
                     <Link
                       href="/play"
-                      className="text-muted-foreground hover:text-foreground transition-colors text-xs"
+                      className="text-muted-foreground hover:text-foreground text-xs transition-colors"
                     >
                       Popular
                     </Link>
@@ -74,24 +69,22 @@ export function Footer() {
                 </ul>
               </div>
               <div className="space-y-2">
-                <h3 className="font-semibold text-xs uppercase tracking-wide">
-                  Community
-                </h3>
+                <h3 className="text-xs font-semibold tracking-wide uppercase">Community</h3>
                 <ul className="space-y-1">
                   <li>
                     <Link
                       href="/play"
-                      className="text-muted-foreground hover:text-foreground transition-colors text-xs"
+                      className="text-muted-foreground hover:text-foreground text-xs transition-colors"
                     >
                       Join Rooms
                     </Link>
                   </li>
                   <li>
                     <Link
-                      href={user ? "/dashboard" : "/login"}
-                      className="text-muted-foreground hover:text-foreground transition-colors text-xs"
+                      href={user ? '/dashboard' : '/login'}
+                      className="text-muted-foreground hover:text-foreground text-xs transition-colors"
                     >
-                      {user ? "Create Room" : "Sign In"}
+                      {user ? 'Create Room' : 'Sign In'}
                     </Link>
                   </li>
                 </ul>
@@ -129,11 +122,11 @@ export function Footer() {
             <div className="space-y-4">
               <Link href="/" className="flex items-center space-x-2">
                 <Gamepad2 className="h-6 w-6" />
-                <span className="font-bold text-xl">Realtime Arcade</span>
+                <span className="text-xl font-bold">Realtime Arcade</span>
               </Link>
-              <p className="text-sm text-muted-foreground">
-                The ultimate multiplayer gaming platform. Play with friends in
-                real-time across multiple games.
+              <p className="text-muted-foreground text-sm">
+                The ultimate multiplayer gaming platform. Play with friends in real-time across
+                multiple games.
               </p>
               <div className="flex space-x-4">
                 <Link
@@ -202,10 +195,10 @@ export function Footer() {
                 </li>
                 <li>
                   <Link
-                    href={user ? "/dashboard" : "/login"}
+                    href={user ? '/dashboard' : '/login'}
                     className="text-muted-foreground hover:text-foreground transition-colors"
                   >
-                    {user ? "Create Room" : "Sign In to Create"}
+                    {user ? 'Create Room' : 'Sign In to Create'}
                   </Link>
                 </li>
                 <li>
@@ -252,13 +245,10 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="border-t mt-4 md:mt-8 pt-4 md:pt-8 text-center text-xs md:text-sm text-muted-foreground">
-          <p>
-            &copy; 2024 Realtime Arcade. Built with Next.js, Supabase, and
-            Tailwind CSS.
-          </p>
+        <div className="text-muted-foreground mt-4 border-t pt-4 text-center text-xs md:mt-8 md:pt-8 md:text-sm">
+          <p>&copy; 2024 Realtime Arcade. Built with Next.js, Supabase, and Tailwind CSS.</p>
         </div>
       </div>
     </footer>
-  );
+  )
 }

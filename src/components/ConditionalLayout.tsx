@@ -1,51 +1,51 @@
-"use client";
+'use client'
 
-import { usePathname } from "next/navigation";
-import { Footer } from "./Footer";
-import { Header } from "./Header";
+import { usePathname } from 'next/navigation'
+import { Footer } from './Footer'
+import { Header } from './Header'
 
 interface ConditionalLayoutProps {
-  children: React.ReactNode;
+  children: React.ReactNode
 }
 
 export function ConditionalLayout({ children }: ConditionalLayoutProps) {
-  const pathname = usePathname();
+  const pathname = usePathname()
 
   // Check if we're in a dashboard route
-  const isDashboardRoute = /^\/(dashboard|games)(\/|$)/.test(pathname);
+  const isDashboardRoute = /^\/(dashboard|games)(\/|$)/.test(pathname)
 
   // Check if we're on the landing page
-  const isLandingPage = pathname === "/";
+  const isLandingPage = pathname === '/'
 
   // Check if we're on the play page (handles its own server-side header)
-  const isPlayPage = pathname === "/play";
+  const isPlayPage = pathname === '/play'
 
   // For dashboard routes, just render children (dashboard layout handles its own header)
   if (isDashboardRoute) {
-    return <>{children}</>;
+    return <>{children}</>
   }
 
   // For play page, just render children (play page handles its own server-side header)
   if (isPlayPage) {
-    return <>{children}</>;
+    return <>{children}</>
   }
 
   // For landing page, render without header for cleaner hero experience
   if (isLandingPage) {
     return (
-      <div className="min-h-screen flex flex-col">
+      <div className="flex min-h-screen flex-col">
         <main className="flex-1">{children}</main>
         <Footer />
       </div>
-    );
+    )
   }
 
   // For other public routes, render with header and footer
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="flex min-h-screen flex-col">
       <Header />
-      <main className="flex-1 flex flex-col">{children}</main>
+      <main className="flex flex-1 flex-col">{children}</main>
       <Footer />
     </div>
-  );
+  )
 }

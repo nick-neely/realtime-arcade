@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button'
 import {
   Sidebar,
   SidebarContent,
@@ -11,31 +11,31 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarSeparator,
-} from "@/components/ui/sidebar";
-import { Gamepad2, Home, LogOut, Users } from "lucide-react";
-import Link from "next/link";
+} from '@/components/ui/sidebar'
+import { Gamepad2, Home, LogOut, Users } from 'lucide-react'
+import Link from 'next/link'
 
 // Menu items for navigation
 const navigationItems = [
   {
-    title: "Home",
-    url: "/",
+    title: 'Home',
+    url: '/',
     icon: Home,
   },
   {
-    title: "Hub",
-    url: "/dashboard",
+    title: 'Hub',
+    url: '/dashboard',
     icon: Gamepad2,
   },
   {
-    title: "Browse Rooms",
-    url: "/dashboard/play",
+    title: 'Browse Rooms',
+    url: '/dashboard/play',
     icon: Users,
   },
-];
+]
 
 interface AppSidebarProps {
-  userEmail?: string;
+  userEmail?: string
 }
 
 export function AppSidebar({ userEmail }: AppSidebarProps) {
@@ -44,7 +44,7 @@ export function AppSidebar({ userEmail }: AppSidebarProps) {
       <SidebarHeader>
         <div className="flex items-center space-x-2 px-2">
           <Gamepad2 className="h-6 w-6" />
-          <span className="font-bold text-xl">Realtime Arcade</span>
+          <span className="text-xl font-bold">Realtime Arcade</span>
         </div>
       </SidebarHeader>
 
@@ -73,9 +73,7 @@ export function AppSidebar({ userEmail }: AppSidebarProps) {
           <SidebarGroupContent>
             {userEmail && (
               <div className="px-2 py-1">
-                <p className="text-sm text-muted-foreground truncate">
-                  {userEmail}
-                </p>
+                <p className="text-muted-foreground truncate text-sm">{userEmail}</p>
               </div>
             )}
             <SidebarSeparator />
@@ -86,7 +84,7 @@ export function AppSidebar({ userEmail }: AppSidebarProps) {
                     <Button
                       variant="ghost"
                       type="submit"
-                      className="w-full justify-start rounded-none border-2 border-transparent hover:border-foreground"
+                      className="hover:border-foreground w-full justify-start rounded-none border-2 border-transparent"
                     >
                       <LogOut className="h-4 w-4" />
                       <span>Sign out</span>
@@ -99,5 +97,5 @@ export function AppSidebar({ userEmail }: AppSidebarProps) {
         </SidebarGroup>
       </SidebarFooter>
     </Sidebar>
-  );
+  )
 }

@@ -1,83 +1,77 @@
-"use client";
+'use client'
 
-import { Button } from "@/components/ui/button";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import { createSupabaseClient } from "@/lib/supabase/client";
-import type { User as SupabaseUser } from "@supabase/supabase-js";
-import { Gamepad2, LogOut, Menu, User } from "lucide-react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { Button } from '@/components/ui/button'
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
+import { createSupabaseClient } from '@/lib/supabase/client'
+import type { User as SupabaseUser } from '@supabase/supabase-js'
+import { Gamepad2, LogOut, Menu, User } from 'lucide-react'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useEffect, useMemo, useState } from 'react'
 
 export function Header() {
-  const [user, setUser] = useState<SupabaseUser | null>(null);
-  const [loading, setLoading] = useState(true);
-  const router = useRouter();
-  const supabase = useMemo(() => createSupabaseClient(), []);
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [user, setUser] = useState<SupabaseUser | null>(null)
+  const [loading, setLoading] = useState(true)
+  const router = useRouter()
+  const supabase = useMemo(() => createSupabaseClient(), [])
+  const [menuOpen, setMenuOpen] = useState(false)
 
   useEffect(() => {
     const getUser = async () => {
       const {
         data: { user },
-      } = await supabase.auth.getUser();
-      setUser(user);
-      setLoading(false);
-    };
+      } = await supabase.auth.getUser()
+      setUser(user)
+      setLoading(false)
+    }
 
-    getUser();
+    getUser()
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
-      setUser(session?.user ?? null);
-      setLoading(false);
-    });
+      setUser(session?.user ?? null)
+      setLoading(false)
+    })
 
-    return () => subscription.unsubscribe();
-  }, [supabase]);
+    return () => subscription.unsubscribe()
+  }, [supabase])
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    router.push("/");
-  };
+    await supabase.auth.signOut()
+    router.push('/')
+  }
 
   const NavigationLinks = () => (
     <>
       <Button
         asChild
         variant="ghost"
-        className="rounded-none border-2 border-transparent hover:border-foreground"
+        className="hover:border-foreground rounded-none border-2 border-transparent"
       >
         <Link href="/play">Browse Games</Link>
       </Button>
 
       {loading ? (
-        <div className="w-20 h-10 bg-muted animate-pulse rounded-none" />
+        <div className="bg-muted h-10 w-20 animate-pulse rounded-none" />
       ) : user ? (
         <>
           <Button
             asChild
             variant="ghost"
-            className="rounded-none border-2 border-transparent hover:border-foreground"
+            className="hover:border-foreground rounded-none border-2 border-transparent"
           >
             <Link href="/dashboard">
-              <User className="h-4 w-4 mr-2" />
+              <User className="mr-2 h-4 w-4" />
               Dashboard
             </Link>
           </Button>
           <Button
             variant="ghost"
             onClick={handleSignOut}
-            className="rounded-none border-2 border-transparent hover:border-foreground"
+            className="hover:border-foreground rounded-none border-2 border-transparent"
           >
-            <LogOut className="h-4 w-4 mr-2" />
+            <LogOut className="mr-2 h-4 w-4" />
             Sign Out
           </Button>
         </>
@@ -86,7 +80,7 @@ export function Header() {
           <Button
             asChild
             variant="ghost"
-            className="rounded-none border-2 border-transparent hover:border-foreground"
+            className="hover:border-foreground rounded-none border-2 border-transparent"
           >
             <Link href="/login">Sign In</Link>
           </Button>
@@ -96,19 +90,19 @@ export function Header() {
         </>
       )}
     </>
-  );
+  )
 
   return (
-    <header className="border-b-2 border-foreground bg-background">
+    <header className="border-foreground bg-background border-b-2">
       <div className="container mx-auto px-4 py-6">
         <nav className="flex items-center justify-between">
           <Link href="/" className="flex items-center space-x-2">
             <Gamepad2 className="h-8 w-8" />
-            <span className="font-bold text-2xl">Realtime Arcade</span>
+            <span className="text-2xl font-bold">Realtime Arcade</span>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="hidden items-center space-x-4 md:flex">
             <NavigationLinks />
           </div>
 
@@ -119,7 +113,7 @@ export function Header() {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="rounded-none border-2 border-transparent hover:border-foreground"
+                  className="hover:border-foreground rounded-none border-2 border-transparent"
                 >
                   <Menu className="h-5 w-5" />
                   <span className="sr-only">Open menu</span>
@@ -129,10 +123,7 @@ export function Header() {
                 <SheetHeader>
                   <SheetTitle className="text-left">Menu</SheetTitle>
                 </SheetHeader>
-                <div
-                  className="flex flex-col space-y-4 mt-6"
-                  onClick={() => setMenuOpen(false)}
-                >
+                <div className="mt-6 flex flex-col space-y-4" onClick={() => setMenuOpen(false)}>
                   <NavigationLinks />
                 </div>
               </SheetContent>
@@ -141,5 +132,5 @@ export function Header() {
         </nav>
       </div>
     </header>
-  );
+  )
 }

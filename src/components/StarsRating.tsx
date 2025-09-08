@@ -1,30 +1,30 @@
-"use client";
+'use client'
 
-import { useEffect, useState } from "react";
-import starsAnimationData from "../../public/animations/stars-rating.json";
-import { LottieAnimation } from "./LottieAnimation";
+import { useEffect, useState } from 'react'
+import starsAnimationData from '../../public/animations/stars-rating.json'
+import { LottieAnimation } from './LottieAnimation'
 
 interface StarsRatingProps {
-  className?: string;
-  delay?: number;
+  className?: string
+  delay?: number
 }
 
-export function StarsRating({ className = "", delay = 0 }: StarsRatingProps) {
-  const [isLoaded, setIsLoaded] = useState(false);
+export function StarsRating({ className = '', delay = 0 }: StarsRatingProps) {
+  const [isLoaded, setIsLoaded] = useState(false)
 
   useEffect(() => {
     // Add delay if specified
     if (delay > 0) {
-      const id = window.setTimeout(() => setIsLoaded(true), delay);
-      return () => window.clearTimeout(id);
+      const id = window.setTimeout(() => setIsLoaded(true), delay)
+      return () => window.clearTimeout(id)
     } else {
-      setIsLoaded(true);
+      setIsLoaded(true)
     }
-  }, [delay]);
+  }, [delay])
 
   return (
     <div className={`flex items-center ${className}`}>
-      <div className="h-4 w-16 flex items-center justify-center">
+      <div className="flex h-4 w-16 items-center justify-center">
         {isLoaded ? (
           <LottieAnimation
             animationData={starsAnimationData}
@@ -39,5 +39,5 @@ export function StarsRating({ className = "", delay = 0 }: StarsRatingProps) {
       </div>
       <span className="ml-1">4.9/5 rating</span>
     </div>
-  );
+  )
 }
