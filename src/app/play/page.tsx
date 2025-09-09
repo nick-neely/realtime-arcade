@@ -1,19 +1,10 @@
-import { ServerHeader } from '@/components/ServerHeader'
 import type { Tables } from '@/lib/supabase/database.types'
 import { createSupabaseServer } from '@/lib/supabase/server'
-import { redirect } from 'next/navigation'
 import { PlayPageClient } from './PlayPageClient'
 
 export default async function Play() {
   const supabase = await createSupabaseServer()
 
-  // Check if user is authenticated and redirect to dashboard play page
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-  if (user) {
-    redirect('/dashboard/play')
-  }
   type RoomListRow = Pick<Tables<'rooms'>, 'id' | 'status'> & {
     games: Pick<Tables<'games'>, 'name' | 'slug'>
   }
@@ -29,7 +20,6 @@ export default async function Play() {
 
   return (
     <div className="bg-background min-h-screen">
-      <ServerHeader />
       {/* Main Content */}
       <section className="container mx-auto px-4 py-8">
         <PlayPageClient rooms={rooms} />

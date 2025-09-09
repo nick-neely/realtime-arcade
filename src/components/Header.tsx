@@ -1,5 +1,6 @@
 'use client'
 
+import { ThemeSwitcher } from '@/components/ThemeSwitcher'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { createSupabaseClient } from '@/lib/supabase/client'
@@ -104,6 +105,7 @@ export function Header() {
           {/* Desktop Navigation */}
           <div className="hidden items-center space-x-4 md:flex">
             <NavigationLinks />
+            <ThemeSwitcher />
           </div>
 
           {/* Mobile Navigation */}
@@ -125,6 +127,9 @@ export function Header() {
                 </SheetHeader>
                 <div className="mt-6 flex flex-col space-y-4" onClick={() => setMenuOpen(false)}>
                   <NavigationLinks />
+                  <div className="border-border border-t-2 pt-4">
+                    <ThemeSwitcher />
+                  </div>
                 </div>
               </SheetContent>
             </Sheet>

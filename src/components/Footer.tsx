@@ -1,5 +1,6 @@
 'use client'
 
+import { FooterThemeSwitcher } from '@/components/FooterThemeSwitcher'
 import { createSupabaseClient } from '@/lib/supabase/client'
 import type { User as SupabaseUser } from '@supabase/supabase-js'
 import { Gamepad2, Github, Mail, Twitter } from 'lucide-react'
@@ -92,7 +93,7 @@ export function Footer() {
             </div>
 
             {/* Social links */}
-            <div className="flex justify-center space-x-4">
+            <div className="flex items-center justify-center space-x-4">
               <Link
                 href="#"
                 className="text-muted-foreground hover:text-foreground transition-colors"
@@ -111,6 +112,8 @@ export function Footer() {
               >
                 <Mail className="h-4 w-4" />
               </Link>
+              <div className="bg-border h-4 w-px" />
+              <FooterThemeSwitcher />
             </div>
           </div>
         </div>
@@ -128,7 +131,7 @@ export function Footer() {
                 The ultimate multiplayer gaming platform. Play with friends in real-time across
                 multiple games.
               </p>
-              <div className="flex space-x-4">
+              <div className="flex items-center space-x-4">
                 <Link
                   href="#"
                   className="text-muted-foreground hover:text-foreground transition-colors"
@@ -147,6 +150,8 @@ export function Footer() {
                 >
                   <Mail className="h-5 w-5" />
                 </Link>
+                <div className="bg-border h-5 w-px" />
+                <FooterThemeSwitcher />
               </div>
             </div>
 
