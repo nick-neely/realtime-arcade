@@ -1,8 +1,19 @@
 'use client'
 
+import { Computer } from '@/components/Computer'
+import { Star } from '@/components/Star'
 import { Button } from '@/components/ui/button'
 import { Card, CardDescription, CardTitle } from '@/components/ui/card'
-import { ArrowRight, Clock, Crown, Gamepad2, Star, Trophy, Users, Zap } from 'lucide-react'
+import {
+  ArrowRight,
+  Clock,
+  Crown,
+  Gamepad2,
+  Star as StarIcon,
+  Trophy,
+  Users,
+  Zap,
+} from 'lucide-react'
 import { motion } from 'motion/react'
 import Link from 'next/link'
 
@@ -57,6 +68,16 @@ export function PlayPageClient({ rooms }: PlayPageClientProps) {
           Join thousands of players in real-time multiplayer games. No downloads, no waiting - just
           pure gaming fun in your browser.
         </motion.p>
+
+        {/* Computer Animation - Desktop only for clean mobile experience */}
+        <motion.div
+          className="absolute top-16 left-8 hidden xl:block"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6, delay: 0.5 }}
+        >
+          <Computer size="xl" delay={500} />
+        </motion.div>
       </motion.div>
 
       {/* Social Proof & Features */}
@@ -216,7 +237,7 @@ export function PlayPageClient({ rooms }: PlayPageClientProps) {
 
       {/* Call to Action Section */}
       <motion.div
-        className="bg-primary/5 border-foreground space-y-6 rounded-none border-2 p-8 text-center"
+        className="bg-primary/5 border-foreground relative space-y-6 overflow-hidden rounded-none border-2 p-8 text-center"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.4, delay: 1.2 }}
@@ -225,6 +246,15 @@ export function PlayPageClient({ rooms }: PlayPageClientProps) {
           transition: { type: 'spring', stiffness: 300, damping: 20 },
         }}
       >
+        {/* Star Animation - Subtle background decoration */}
+        <motion.div
+          className="absolute top-2 right-2"
+          initial={{ opacity: 0, rotate: -10 }}
+          animate={{ opacity: 1, rotate: 0 }}
+          transition={{ duration: 0.8, delay: 1.4 }}
+        >
+          <Star size="sm" delay={1000} className="opacity-60 sm:opacity-100" />
+        </motion.div>
         <motion.div
           className="space-y-3"
           initial={{ opacity: 0, y: 20 }}
@@ -268,7 +298,7 @@ export function PlayPageClient({ rooms }: PlayPageClientProps) {
           <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
             <Button asChild size="lg" className="min-w-[200px] gap-2">
               <Link href="/login">
-                <Star className="h-5 w-5" />
+                <StarIcon className="h-5 w-5" />
                 Start Playing Free
                 <ArrowRight className="h-4 w-4" />
               </Link>
