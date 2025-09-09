@@ -112,7 +112,7 @@ export function Footer() {
               >
                 <Mail className="h-4 w-4" />
               </Link>
-              <div className="bg-border h-4 w-px" />
+              <div className="bg-border h-4 w-px" role="separator" aria-orientation="vertical" />
               <FooterThemeSwitcher />
             </div>
           </div>
@@ -150,7 +150,7 @@ export function Footer() {
                 >
                   <Mail className="h-5 w-5" />
                 </Link>
-                <div className="bg-border h-5 w-px" />
+                <div className="bg-border h-5 w-px" role="separator" aria-orientation="vertical" />
                 <FooterThemeSwitcher />
               </div>
             </div>

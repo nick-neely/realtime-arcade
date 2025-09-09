@@ -53,7 +53,8 @@ export async function updateSession(request: NextRequest) {
   }
 
   // If user is authenticated and trying to access public play page, redirect to dashboard play
-  if (user && request.nextUrl.pathname === '/play') {
+  const normalizedPath = request.nextUrl.pathname.replace(/\/$/, '')
+  if (user && normalizedPath === '/play') {
     const url = request.nextUrl.clone()
     url.pathname = '/dashboard/play'
     const redirectResponse = NextResponse.redirect(url)
