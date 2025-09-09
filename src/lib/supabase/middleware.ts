@@ -52,6 +52,22 @@ export async function updateSession(request: NextRequest) {
     return redirectResponse
   }
 
+  // If user is authenticated and trying to access public play page, redirect to dashboard play
+  const normalizedPath = request.nextUrl.pathname.replace(/\/$/, '')
+  if (user && normalizedPath === '/play') {
+    const url = request.nextUrl.clone()
+    url.pathname = '/dashboard/play'
+    const redirectResponse = NextResponse.redirect(url)
+
+    // Copy all Set-Cookie headers from supabaseResponse to preserve auth cookies
+    const setCookieHeaders = supabaseResponse.headers.getSetCookie()
+    setCookieHeaders.forEach((cookie) => {
+      redirectResponse.headers.append('Set-Cookie', cookie)
+    })
+
+    return redirectResponse
+  }
+
   if (
     !user &&
     !request.nextUrl.pathname.startsWith('/login') &&

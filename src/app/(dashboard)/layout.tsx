@@ -1,4 +1,5 @@
 import { AppSidebar } from '@/components/AppSidebar'
+import { ThemeSwitcherWrapper } from '@/components/ThemeSwitcher'
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
 import { requireUser } from '@/lib/auth/requireUser'
 
@@ -10,8 +11,11 @@ export default async function DashboardLayout({ children }: { children: React.Re
     <SidebarProvider>
       <AppSidebar userEmail={user.email} />
       <SidebarInset>
-        <header className="border-foreground bg-background flex h-16 shrink-0 items-center gap-2 border-b-2 px-4">
+        <header className="border-foreground bg-background flex h-16 shrink-0 items-center justify-between gap-2 border-b-2 px-4">
           <SidebarTrigger className="-ml-1" />
+          <div className="hidden md:block">
+            <ThemeSwitcherWrapper />
+          </div>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4">{children}</div>
       </SidebarInset>

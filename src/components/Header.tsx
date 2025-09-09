@@ -1,5 +1,6 @@
 'use client'
 
+import { ThemeSwitcher } from '@/components/ThemeSwitcher'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { createSupabaseClient } from '@/lib/supabase/client'
@@ -12,11 +13,14 @@ import { useEffect, useMemo, useState } from 'react'
 export function Header() {
   const [user, setUser] = useState<SupabaseUser | null>(null)
   const [loading, setLoading] = useState(true)
+  const [isClient, setIsClient] = useState(false)
   const router = useRouter()
   const supabase = useMemo(() => createSupabaseClient(), [])
   const [menuOpen, setMenuOpen] = useState(false)
 
   useEffect(() => {
+    setIsClient(true)
+
     const getUser = async () => {
       const {
         data: { user },
@@ -52,7 +56,7 @@ export function Header() {
         <Link href="/play">Browse Games</Link>
       </Button>
 
-      {loading ? (
+      {!isClient || loading ? (
         <div className="bg-muted h-10 w-20 animate-pulse rounded-none" />
       ) : user ? (
         <>
@@ -104,6 +108,7 @@ export function Header() {
           {/* Desktop Navigation */}
           <div className="hidden items-center space-x-4 md:flex">
             <NavigationLinks />
+            <ThemeSwitcher />
           </div>
 
           {/* Mobile Navigation */}
@@ -123,8 +128,16 @@ export function Header() {
                 <SheetHeader>
                   <SheetTitle className="text-left">Menu</SheetTitle>
                 </SheetHeader>
-                <div className="mt-6 flex flex-col space-y-4" onClick={() => setMenuOpen(false)}>
-                  <NavigationLinks />
+                <div className="mt-6 flex flex-col space-y-4">
+                  <div onClick={() => setMenuOpen(false)}>
+                    <NavigationLinks />
+                  </div>
+                  <div
+                    className="border-border flex justify-center border-t-2 pt-4"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <ThemeSwitcher />
+                  </div>
                 </div>
               </SheetContent>
             </Sheet>

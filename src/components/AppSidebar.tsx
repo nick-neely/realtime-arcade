@@ -1,3 +1,4 @@
+import { FooterThemeSwitcher } from '@/components/FooterThemeSwitcher'
 import { Button } from '@/components/ui/button'
 import {
   Sidebar,
@@ -77,6 +78,9 @@ export function AppSidebar({ userEmail }: AppSidebarProps) {
               </div>
             )}
             <SidebarSeparator />
+            <div className="px-2 py-2 md:hidden">
+              <FooterThemeSwitcher />
+            </div>
             <SidebarMenu>
               <SidebarMenuItem>
                 <form action="/auth/signout" method="post" className="w-full">
