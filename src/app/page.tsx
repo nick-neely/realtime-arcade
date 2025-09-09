@@ -1,5 +1,7 @@
 'use client'
 
+import { GameController } from '@/components/GameController'
+import { Pizza } from '@/components/Pizza'
 import { StarsRating } from '@/components/StarsRating'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -11,7 +13,7 @@ export default function Home() {
   return (
     <div className="bg-background">
       {/* Hero Section */}
-      <section className="container mx-auto px-4 py-16 md:py-20">
+      <section className="container mx-auto px-4 py-12 md:py-16">
         <div className="mx-auto max-w-5xl space-y-10 text-center">
           {/* Social Proof */}
           <motion.div
@@ -46,17 +48,50 @@ export default function Home() {
 
           {/* Main Headline */}
           <div className="space-y-4">
-            <motion.h1
-              className="text-6xl leading-tight font-bold tracking-tight md:text-7xl"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5 }}
+            <motion.div
+              className="relative flex items-center justify-center xl:pl-8 2xl:pl-12"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
             >
-              The Ultimate <span className="text-primary">Multiplayer</span> Gaming Experience
-            </motion.h1>
+              {/* Game Controller positioned on the left - responsive visibility */}
+              <motion.div
+                className="absolute top-1/2 -left-32 hidden -translate-y-1/2 opacity-0 lg:-left-16 lg:block lg:opacity-100 xl:-left-48 2xl:-left-72"
+                initial={{ opacity: 0, x: -50, rotate: -10 }}
+                animate={{
+                  opacity: [0, 0, 1],
+                  x: 0,
+                  rotate: 0,
+                  y: [0, -10, 0],
+                }}
+                transition={{
+                  opacity: { duration: 0.8, delay: 0.4, times: [0, 0.5, 1] },
+                  x: { duration: 0.8, delay: 0.4, type: 'spring', stiffness: 100 },
+                  rotate: { duration: 0.8, delay: 0.4, type: 'spring', stiffness: 100 },
+                  y: { duration: 3, repeat: Infinity, ease: 'easeInOut' },
+                }}
+                whileHover={{
+                  scale: 1.1,
+                  rotate: 5,
+                  y: 0,
+                  transition: { duration: 0.3 },
+                }}
+              >
+                <GameController size="xl" delay={600} />
+              </motion.div>
+
+              <motion.h1
+                className="text-4xl leading-tight font-bold tracking-tight sm:text-5xl md:text-6xl lg:max-w-4xl lg:text-6xl xl:max-w-5xl xl:text-7xl 2xl:text-8xl"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5 }}
+              >
+                The Ultimate <span className="text-primary">Multiplayer</span> Gaming Experience
+              </motion.h1>
+            </motion.div>
 
             <motion.p
-              className="text-muted-foreground mx-auto max-w-3xl text-xl leading-relaxed md:text-2xl"
+              className="text-muted-foreground mx-auto max-w-3xl text-lg leading-relaxed sm:text-xl md:text-xl lg:text-2xl xl:text-2xl 2xl:text-3xl"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5, delay: 0.1 }}
@@ -67,13 +102,81 @@ export default function Home() {
             </motion.p>
           </div>
 
+          {/* Responsive Animations - shown below content on tablet and small desktop */}
+          <motion.div
+            className="flex items-center justify-center space-x-4 sm:flex sm:space-x-6 lg:hidden"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8, rotate: -10 }}
+              animate={{ opacity: 1, scale: 1, rotate: 0 }}
+              transition={{
+                duration: 0.8,
+                delay: 0.6,
+                type: 'spring',
+                stiffness: 100,
+              }}
+              whileHover={{
+                scale: 1.1,
+                rotate: 5,
+                transition: { duration: 0.3 },
+              }}
+            >
+              <GameController size="xl" delay={800} />
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8, rotate: 15 }}
+              animate={{ opacity: 1, scale: 1, rotate: 0 }}
+              transition={{
+                duration: 0.8,
+                delay: 0.8,
+                type: 'spring',
+                stiffness: 100,
+              }}
+              whileHover={{
+                scale: 1.1,
+                rotate: -10,
+                transition: { duration: 0.3 },
+              }}
+            >
+              <Pizza size="xl" delay={1000} />
+            </motion.div>
+          </motion.div>
+
           {/* Urgency CTA */}
           <motion.div
-            className="pt-4"
+            className="relative pt-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.4, delay: 0.2 }}
           >
+            {/* Pizza positioned to the right of the urgency CTA - responsive visibility */}
+            <motion.div
+              className="absolute top-1/2 -right-32 hidden -translate-y-1/2 opacity-0 xl:-right-40 xl:block xl:opacity-100 2xl:-right-72"
+              initial={{ opacity: 0, x: 50, y: -30, rotate: 15 }}
+              animate={{
+                opacity: [0, 0, 1],
+                x: 0,
+                y: 0,
+                rotate: 0,
+              }}
+              transition={{
+                opacity: { duration: 0.8, delay: 0.6, times: [0, 0.5, 1] },
+                x: { duration: 0.8, delay: 0.6, type: 'spring', stiffness: 100 },
+                y: { duration: 0.8, delay: 0.6, type: 'spring', stiffness: 100 },
+                rotate: { duration: 0.8, delay: 0.6, type: 'spring', stiffness: 100 },
+              }}
+              whileHover={{
+                scale: 1.1,
+                rotate: -10,
+                transition: { duration: 0.3 },
+              }}
+            >
+              <Pizza size="xl" delay={800} />
+            </motion.div>
+
             <motion.div
               whileHover={{ y: -2 }}
               transition={{ type: 'spring', stiffness: 300, damping: 20 }}

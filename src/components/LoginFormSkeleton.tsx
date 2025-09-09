@@ -21,7 +21,7 @@ export function LoginFormSkeleton() {
       </div>
 
       {/* Login Form Card Skeleton */}
-      <div className="bg-card mx-auto w-full max-w-md space-y-6 border-2 border-black p-6 shadow-lg md:max-w-lg md:p-8 lg:max-w-xl lg:p-12">
+      <div className="bg-card mx-auto mb-16 w-full max-w-md space-y-6 border-2 border-black p-6 shadow-lg md:max-w-lg md:p-8 lg:max-w-xl lg:p-12">
         {/* GitHub Button Skeleton */}
         <Skeleton className="h-12 w-full animate-pulse" aria-hidden="true" />
 
