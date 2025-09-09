@@ -127,7 +127,7 @@ export function Header() {
                 </SheetHeader>
                 <div className="mt-6 flex flex-col space-y-4" onClick={() => setMenuOpen(false)}>
                   <NavigationLinks />
-                  <div className="border-border border-t-2 pt-4">
+                  <div className="border-border flex justify-center border-t-2 pt-4">
                     <ThemeSwitcher />
                   </div>
                 </div>
