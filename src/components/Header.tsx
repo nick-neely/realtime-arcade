@@ -13,11 +13,14 @@ import { useEffect, useMemo, useState } from 'react'
 export function Header() {
   const [user, setUser] = useState<SupabaseUser | null>(null)
   const [loading, setLoading] = useState(true)
+  const [isClient, setIsClient] = useState(false)
   const router = useRouter()
   const supabase = useMemo(() => createSupabaseClient(), [])
   const [menuOpen, setMenuOpen] = useState(false)
 
   useEffect(() => {
+    setIsClient(true)
+
     const getUser = async () => {
       const {
         data: { user },
@@ -53,7 +56,7 @@ export function Header() {
         <Link href="/play">Browse Games</Link>
       </Button>
 
-      {loading ? (
+      {!isClient || loading ? (
         <div className="bg-muted h-10 w-20 animate-pulse rounded-none" />
       ) : user ? (
         <>
