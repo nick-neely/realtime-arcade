@@ -3,7 +3,8 @@
 import { FooterThemeSwitcher } from '@/components/FooterThemeSwitcher'
 import { createSupabaseClient } from '@/lib/supabase/client'
 import type { User as SupabaseUser } from '@supabase/supabase-js'
-import { Gamepad2, Github, Mail, Twitter } from 'lucide-react'
+import { Github, Mail, Twitter } from 'lucide-react'
+import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useMemo, useState } from 'react'
 
@@ -38,7 +39,13 @@ export function Footer() {
             {/* Brand */}
             <div className="text-center">
               <Link href="/" className="flex items-center justify-center space-x-2">
-                <Gamepad2 className="h-5 w-5" />
+                <Image
+                  src="/logo.png"
+                  alt="Realtime Arcade Logo"
+                  width={40}
+                  height={40}
+                  className="h-10 w-10"
+                />
                 <span className="text-lg font-bold">Realtime Arcade</span>
               </Link>
               <p className="text-muted-foreground mt-2 text-xs">
@@ -124,7 +131,13 @@ export function Footer() {
             {/* Brand */}
             <div className="space-y-4">
               <Link href="/" className="flex items-center space-x-2">
-                <Gamepad2 className="h-6 w-6" />
+                <Image
+                  src="/logo.png"
+                  alt="Realtime Arcade Logo"
+                  width={56}
+                  height={56}
+                  className="h-14 w-14"
+                />
                 <span className="text-xl font-bold">Realtime Arcade</span>
               </Link>
               <p className="text-muted-foreground text-sm">

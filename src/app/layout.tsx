@@ -30,6 +30,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <meta name="apple-mobile-web-app-title" content="Realtime Arcade" />
+      </head>
       <body className={`${dmSans.variable} ${spaceMono.variable} font-sans antialiased`}>
         <Providers>
           <ConditionalLayout>{children}</ConditionalLayout>

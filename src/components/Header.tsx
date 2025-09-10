@@ -5,7 +5,8 @@ import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { createSupabaseClient } from '@/lib/supabase/client'
 import type { User as SupabaseUser } from '@supabase/supabase-js'
-import { Gamepad2, LogOut, Menu, User } from 'lucide-react'
+import { LogOut, Menu, User } from 'lucide-react'
+import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useMemo, useState } from 'react'
@@ -101,7 +102,13 @@ export function Header() {
       <div className="container mx-auto px-4 py-6">
         <nav className="flex items-center justify-between">
           <Link href="/" className="flex items-center space-x-2">
-            <Gamepad2 className="h-8 w-8" />
+            <Image
+              src="/logo.png"
+              alt="Realtime Arcade Logo"
+              width={56}
+              height={56}
+              className="h-14 w-14"
+            />
             <span className="text-2xl font-bold">Realtime Arcade</span>
           </Link>
 
