@@ -14,6 +14,7 @@ import {
   SidebarSeparator,
 } from '@/components/ui/sidebar'
 import { Gamepad2, Home, LogOut, Users } from 'lucide-react'
+import Image from 'next/image'
 import Link from 'next/link'
 
 // Menu items for navigation
@@ -44,7 +45,13 @@ export function AppSidebar({ userEmail }: AppSidebarProps) {
     <Sidebar>
       <SidebarHeader>
         <div className="flex items-center space-x-2 px-2">
-          <Gamepad2 className="h-6 w-6" />
+          <Image
+            src="/logo.png"
+            alt="Realtime Arcade Logo"
+            width={48}
+            height={48}
+            className="h-12 w-12"
+          />
           <span className="text-xl font-bold">Realtime Arcade</span>
         </div>
       </SidebarHeader>
